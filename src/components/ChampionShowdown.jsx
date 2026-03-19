@@ -2,7 +2,7 @@ import React from 'react'
 import { PLAYERS } from '../data/brackets.js'
 import { SectionHeader } from './Leaderboard.jsx'
 
-export default function ChampionShowdown({ bracketResults }) {
+export default function ChampionShowdown({ bracketResults = { champion: null } }) {
   const champion = bracketResults?.champion || null
 
   return (

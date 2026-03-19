@@ -9,7 +9,17 @@ import LiveTicker from './components/LiveTicker.jsx'
 import { useLiveScores } from './hooks/useLiveScores.js'
 
 export default function App() {
-  const { bracketResults, liveGames, lastUpdated, loading, error, refetch } = useLiveScores()
+  const { bracketResults: rawResults, liveGames, lastUpdated, loading, error, refetch } = useLiveScores()
+
+  const DEFAULT_RESULTS = {
+    firstRound: new Array(32).fill(null),
+    eliteEight: new Array(8).fill(null),
+    finalFour: new Array(4).fill(null),
+    champion: null,
+    liveScores: {},
+  }
+
+  const bracketResults = rawResults || DEFAULT_RESULTS
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', position: 'relative', overflow: 'hidden' }}>

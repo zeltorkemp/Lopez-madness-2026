@@ -62,7 +62,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null
 }
 
-export default function StatsSection({ bracketResults }) {
+export default function StatsSection({ bracketResults = { firstRound: new Array(32).fill(null) } }) {
   const regionData = getRegionStats()
   const agreeCount = getAgreeCount()
   const gamesPlayed = bracketResults.firstRound.filter(r => r !== null).length

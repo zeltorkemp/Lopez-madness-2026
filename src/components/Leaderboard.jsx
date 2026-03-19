@@ -40,7 +40,7 @@ function calcScore(player) {
   return { score, correct, total, pct }
 }
 
-export default function Leaderboard({ bracketResults }) {
+export default function Leaderboard({ bracketResults = { firstRound: new Array(32).fill(null), eliteEight: [], finalFour: [], champion: null } }) {
   const scored = PLAYERS.map(p => ({ ...p, ...calcScore(p) }))
     .sort((a, b) => b.score - a.score)
 

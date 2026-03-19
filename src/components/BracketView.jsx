@@ -4,7 +4,7 @@ import { SectionHeader } from './Leaderboard.jsx'
 
 const REGIONS = ['East', 'West', 'Midwest', 'South']
 
-export default function BracketView({ bracketResults }) {
+export default function BracketView({ bracketResults = { firstRound: new Array(32).fill(null), liveScores: {} } }) {
   const [activeRegion, setActiveRegion] = useState('East')
 
   const regionGames = FIRST_ROUND.filter(g => g.region === activeRegion)
