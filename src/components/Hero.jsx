@@ -99,8 +99,8 @@ export default function Hero() {
         marginBottom: '60px',
       }}>
         {[
-          { name: 'Dad', emoji: '👨', color: '#00c8ff', champion: 'Duke', role: 'The Veteran' },
-          { name: 'Kannon & Kai', emoji: '👦👦', color: '#ff6b00', champion: 'Michigan', role: 'The Challengers' },
+          { name: 'Dad', emoji: '👨🏻', color: '#00c8ff', champion: 'Duke', role: 'The Veteran' },
+          { name: 'Kannon & Kai', emoji: '👦🏻👦🏻', color: '#ff6b00', champion: 'Michigan', role: 'The Challengers' },
         ].map((p, i) => (
           <div key={i} style={{
             background: 'var(--surface)',

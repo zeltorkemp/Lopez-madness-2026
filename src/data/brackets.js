@@ -85,7 +85,7 @@ export const PLAYERS = [
   {
     id: 'dad',
     name: 'Dad',
-    emoji: '👨',
+    emoji: '👨🏻',
     color: '#00c8ff',
     champion: 'Duke',
     finalFour: ['Duke', 'Arizona', 'Michigan', 'Houston'],
@@ -100,7 +100,7 @@ export const PLAYERS = [
   {
     id: 'kannon-kai',
     name: 'Kannon & Kai',
-    emoji: '👦👦',
+    emoji: '👦🏻👦🏻',
     color: '#ff6b00',
     champion: 'Michigan',
     finalFour: ['Michigan State', 'Arizona', 'Michigan', 'Illinois'],
