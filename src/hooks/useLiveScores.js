@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { FIRST_ROUND, ESPN_ALIASES } from '../data/brackets.js'
+import { FIRST_ROUND, ESPN_ALIASES, KNOWN_RESULTS } from '../data/brackets.js'
 
 const DEFAULT_RESULTS = {
   firstRound: new Array(32).fill(null),
@@ -9,70 +9,72 @@ const DEFAULT_RESULTS = {
   liveScores: {},
 }
 
-function normalize(espnName) {
-  if (!espnName) return null
-  return ESPN_ALIASES[espnName] || espnName
+function normalize(name) {
+  if (!name) return null
+  return ESPN_ALIASES[name] || name
 }
 
-function matchGame(espnGame, bracketGames) {
+function matchGame(espnGame) {
   const home = normalize(espnGame.homeTeam)
   const away = normalize(espnGame.awayTeam)
-  return bracketGames.find(g => {
-    const top = g.top.name
-    const bot = g.bottom.name
-    return (top === home || top === away) && (bot === home || bot === away)
+  return FIRST_ROUND.find(g => {
+    const t = g.top.name, b = g.bottom.name
+    return (t === home || t === away) && (b === home || b === away)
   })
 }
 
 export function useLiveScores() {
-  const [bracketResults, setBracketResults] = useState(DEFAULT_RESULTS)
+  // Start with known hardcoded results immediately
+  const [bracketResults, setBracketResults] = useState({
+    ...DEFAULT_RESULTS,
+    firstRound: [...KNOWN_RESULTS.firstRound],
+    liveScores: {},
+  })
   const [liveGames, setLiveGames] = useState([])
-  const [lastUpdated, setLastUpdated] = useState(null)
+  const [lastUpdated, setLastUpdated] = useState('Hardcoded Day 1 results')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   const fetchScores = useCallback(async () => {
     try {
       const res = await fetch('/api/scores')
-      if (!res.ok) throw new Error('API error ' + res.status)
+      if (!res.ok) throw new Error('API ' + res.status)
       const data = await res.json()
-      if (!data.success) throw new Error(data.error || 'Unknown error')
+      if (!data.success) throw new Error(data.error)
 
-      setLiveGames(data.games || [])
+      const games = data.games || []
+      setLiveGames(games)
       setLastUpdated(data.updated)
       setError(null)
 
-      const firstRound = new Array(32).fill(null)
+      // Merge ESPN live/final results on top of known results
+      const firstRound = [...KNOWN_RESULTS.firstRound]
       const liveScores = {}
 
-      ;(data.games || []).forEach(espnGame => {
+      games.forEach(g => {
         try {
-          const match = matchGame(espnGame, FIRST_ROUND)
+          const match = matchGame(g)
           if (!match) return
           const idx = match.id - 1
           liveScores[match.id] = {
-            homeTeam: normalize(espnGame.homeTeam),
-            awayTeam: normalize(espnGame.awayTeam),
-            homeScore: espnGame.homeScore,
-            awayScore: espnGame.awayScore,
-            inProgress: espnGame.inProgress,
-            completed: espnGame.completed,
-            clock: espnGame.clock,
-            period: espnGame.period,
+            homeTeam: normalize(g.homeTeam),
+            awayTeam: normalize(g.awayTeam),
+            homeScore: g.homeScore,
+            awayScore: g.awayScore,
+            inProgress: g.inProgress,
+            completed: g.completed,
+            clock: g.clock,
+            period: g.period,
           }
-          if (espnGame.completed && espnGame.winner) {
-            firstRound[idx] = normalize(espnGame.winner)
-          }
-        } catch (e) {
-          // skip bad game entry
-        }
+          if (g.completed && g.winner) firstRound[idx] = normalize(g.winner)
+        } catch (e) {}
       })
 
       setBracketResults({ ...DEFAULT_RESULTS, firstRound, liveScores })
     } catch (err) {
-      console.warn('Score fetch failed (non-fatal):', err.message)
+      console.warn('ESPN API failed, using hardcoded results:', err.message)
       setError(err.message)
-      // Keep default results — don't crash
+      // Keep hardcoded results on API failure
     } finally {
       setLoading(false)
     }
@@ -80,7 +82,7 @@ export function useLiveScores() {
 
   useEffect(() => {
     fetchScores()
-    const interval = setInterval(fetchScores, 60 * 1000)
+    const interval = setInterval(fetchScores, 60000)
     return () => clearInterval(interval)
   }, [fetchScores])
 

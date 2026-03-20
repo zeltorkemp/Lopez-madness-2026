@@ -3,253 +3,117 @@ import { PLAYERS, FIRST_ROUND, REGION_COLORS } from '../data/brackets.js'
 import { SectionHeader } from './Leaderboard.jsx'
 
 const REGIONS = ['East', 'West', 'Midwest', 'South']
+const DEFAULT_RESULTS = { firstRound: new Array(32).fill(null), liveScores: {} }
 
-export default function BracketView({ bracketResults = { firstRound: new Array(32).fill(null), liveScores: {} } }) {
-  const [activeRegion, setActiveRegion] = useState('East')
+export default function BracketView({ bracketResults }) {
+  const [region, setRegion] = useState('East')
+  const results = bracketResults || DEFAULT_RESULTS
+  const games = FIRST_ROUND.filter(g => g.region === region)
+  const color = REGION_COLORS[region]
 
-  const regionGames = FIRST_ROUND.filter(g => g.region === activeRegion)
+  const regionComplete = games.filter(g => results.firstRound[g.id - 1] !== null).length
+  const regionTotal = games.length
 
   return (
-    <section id="bracket" style={{ padding: '0 24px 80px', maxWidth: '900px', margin: '0 auto' }}>
-      <SectionHeader label="PICKS" title="Bracket Breakdown" />
+    <div style={{ padding: '28px 20px 100px', maxWidth: '640px', margin: '0 auto' }}>
+      <SectionHeader label="PICKS" title="Bracket" subtitle="See every pick side by side" />
 
       {/* Region tabs */}
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '28px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', marginBottom: '20px' }}>
         {REGIONS.map(r => (
-          <button key={r} onClick={() => setActiveRegion(r)} style={{
-            background: activeRegion === r ? REGION_COLORS[r] + '22' : 'var(--surface)',
-            border: `1px solid ${activeRegion === r ? REGION_COLORS[r] : 'var(--border)'}`,
-            borderRadius: '6px',
-            padding: '8px 20px',
-            cursor: 'pointer',
-            fontFamily: "'Bebas Neue', cursive",
-            fontSize: '16px',
-            letterSpacing: '2px',
-            color: activeRegion === r ? REGION_COLORS[r] : 'var(--text2)',
+          <button key={r} onClick={() => setRegion(r)} style={{
+            background: region === r ? REGION_COLORS[r] + '20' : 'var(--surface)',
+            border: `1px solid ${region === r ? REGION_COLORS[r] : 'var(--border)'}`,
+            borderRadius: '8px', padding: '10px 4px', cursor: 'pointer',
+            fontFamily: "'Bebas Neue', cursive", fontSize: '15px', letterSpacing: '1px',
+            color: region === r ? REGION_COLORS[r] : 'var(--muted)',
             transition: 'all 0.2s',
           }}>{r}</button>
         ))}
       </div>
 
+      {/* Progress for this region */}
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', padding: '12px 16px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '9px', color: color, letterSpacing: '2px' }}>{region.toUpperCase()} REGION</span>
+        <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '9px', color: 'var(--muted)', letterSpacing: '1px' }}>{regionComplete}/{regionTotal} played</span>
+      </div>
+
       {/* Column headers */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 80px 1fr',
-        gap: '8px',
-        marginBottom: '8px',
-        padding: '0 4px',
-      }}>
-        {PLAYERS.map((p, i) => (
-          <React.Fragment key={p.id}>
-            <div style={{
-              fontFamily: "'Share Tech Mono', monospace",
-              fontSize: '9px',
-              letterSpacing: '3px',
-              color: p.color,
-              textAlign: i === 1 ? 'right' : 'left',
-              gridColumn: i === 0 ? 1 : 3,
-            }}>{p.emoji} {p.name.toUpperCase()}</div>
-          </React.Fragment>
-        ))}
-        <div style={{
-          fontFamily: "'Share Tech Mono', monospace",
-          fontSize: '8px',
-          letterSpacing: '2px',
-          color: 'var(--muted)',
-          textAlign: 'center',
-          gridColumn: 2,
-        }}>GAME</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 44px 1fr', gap: '6px', marginBottom: '8px', padding: '0 2px' }}>
+        <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '8px', color: PLAYERS[0].color, letterSpacing: '2px' }}>{PLAYERS[0].emoji} DAD</div>
+        <div />
+        <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '8px', color: PLAYERS[1].color, letterSpacing: '2px', textAlign: 'right' }}>BOYS {PLAYERS[1].emoji}</div>
       </div>
 
       {/* Games */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-        {regionGames.map((game, idx) => {
-          const result = bracketResults.firstRound[game.id - 1]
-          return (
-            <GameRow
-              key={game.id}
-              game={game}
-              result={result}
-              dadPick={PLAYERS[0].firstRound[game.id - 1]}
-              kidsPick={PLAYERS[1].firstRound[game.id - 1]}
-              regionColor={REGION_COLORS[activeRegion]}
-              idx={idx}
-            />
-          )
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginBottom: '24px' }}>
+        {games.map((game, idx) => {
+          const result = results.firstRound[game.id - 1]
+          const live = (results.liveScores || {})[game.id]
+          return <GameRow key={game.id} game={game} result={result} live={live} dadPick={PLAYERS[0].firstRound[game.id - 1]} kidsPick={PLAYERS[1].firstRound[game.id - 1]} color={color} idx={idx} />
         })}
       </div>
 
-      {/* Final four for this region */}
-      <div style={{ marginTop: '24px' }}>
-        <div style={{
-          fontFamily: "'Share Tech Mono', monospace",
-          fontSize: '9px',
-          letterSpacing: '3px',
-          color: 'var(--muted)',
-          marginBottom: '10px',
-        }}>// FINAL FOUR PICK — {activeRegion.toUpperCase()}</div>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 80px 1fr',
-          gap: '8px',
-        }}>
+      {/* Final Four pick for region */}
+      <div style={{ background: 'var(--surface)', border: `1px solid ${color}33`, borderRadius: 'var(--radius)', padding: '16px' }}>
+        <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '8px', color: color, letterSpacing: '2px', marginBottom: '12px' }}>🏆 FINAL FOUR PICK</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '10px', alignItems: 'center' }}>
           {PLAYERS.map((p, i) => {
-            const ff = p.finalFour.find(t => {
-              const regionTeams = FIRST_ROUND.filter(g => g.region === activeRegion)
-                .flatMap(g => [g.top.name, g.bottom.name])
-              return regionTeams.includes(t)
-            }) || p.finalFour[REGIONS.indexOf(activeRegion)]
+            const ff = p.finalFour[REGIONS.indexOf(region)]
             return (
-              <div key={p.id} style={{
-                background: `${p.color}11`,
-                border: `1px solid ${p.color}33`,
-                borderRadius: '8px',
-                padding: '12px 14px',
-                textAlign: i === 0 ? 'left' : 'right',
-                gridColumn: i === 0 ? 1 : 3,
-              }}>
-                <div style={{
-                  fontFamily: "'Share Tech Mono', monospace",
-                  fontSize: '7px',
-                  letterSpacing: '2px',
-                  color: p.color,
-                  marginBottom: '4px',
-                }}>FINAL FOUR</div>
-                <div style={{
-                  fontFamily: "'Bebas Neue', cursive",
-                  fontSize: '20px',
-                  letterSpacing: '1.5px',
-                  color: '#fff',
-                }}>{ff || '—'}</div>
-              </div>
+              <React.Fragment key={p.id}>
+                <div style={{ background: `${p.color}0a`, border: `1px solid ${p.color}22`, borderRadius: '8px', padding: '12px', textAlign: i === 0 ? 'left' : 'right' }}>
+                  <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '7px', color: p.color, letterSpacing: '1px', marginBottom: '4px' }}>{p.name.toUpperCase()}</div>
+                  <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: '18px', color: '#fff', letterSpacing: '1px' }}>{ff || '—'}</div>
+                </div>
+                {i === 0 && <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: '18px', color: 'var(--muted)', textAlign: 'center' }}>VS</div>}
+              </React.Fragment>
             )
           })}
-          <div style={{ gridColumn: 2 }} />
         </div>
       </div>
-    </section>
+    </div>
   )
 }
 
-function GameRow({ game, result, dadPick, kidsPick, regionColor, idx }) {
+function GameRow({ game, result, live, dadPick, kidsPick, color, idx }) {
+  const agree = dadPick === kidsPick
   const dadCorrect = result && dadPick === result
   const kidsCorrect = result && kidsPick === result
-  const agree = dadPick === kidsPick
 
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: '1fr 80px 1fr',
-      gap: '8px',
-      animation: `fadeUp 0.3s ease ${idx * 0.04}s both`,
-    }}>
-      {/* Dad pick */}
-      <PickCell
-        pick={dadPick}
-        game={game}
-        result={result}
-        isCorrect={dadCorrect}
-        color={PLAYERS[0].color}
-        align="left"
-      />
-
-      {/* Center - game info */}
-      <div style={{
-        background: 'var(--surface)',
-        border: '1px solid var(--border)',
-        borderRadius: '6px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '6px 4px',
-        gap: '2px',
-      }}>
-        <div style={{
-          fontFamily: "'Share Tech Mono', monospace",
-          fontSize: '7px',
-          color: regionColor,
-          letterSpacing: '1px',
-        }}>G{game.id}</div>
-        {agree && (
-          <div style={{ fontSize: '10px' }} title="Both agree">🤝</div>
-        )}
-        {result && (
-          <div style={{
-            width: '6px', height: '6px', borderRadius: '50%',
-            background: 'var(--neon-green)',
-            boxShadow: '0 0 6px var(--neon-green)',
-          }} />
-        )}
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 44px 1fr', gap: '5px', animation: `fadeUp 0.3s ease ${idx * 0.03}s both` }}>
+      <PickCell pick={dadPick} game={game} result={result} isCorrect={dadCorrect} color={PLAYERS[0].color} align="left" />
+      {/* Center */}
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '6px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '3px', padding: '4px 2px' }}>
+        <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '7px', color: color, letterSpacing: '0.5px' }}>G{game.id}</div>
+        {agree && <div style={{ fontSize: '9px' }}>🤝</div>}
+        {live?.inProgress && <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--green)', boxShadow: '0 0 5px var(--green)', animation: 'pulse 1s infinite' }} />}
+        {result && !live?.inProgress && <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '7px', color: 'var(--green)' }}>F</div>}
       </div>
-
-      {/* Kids pick */}
-      <PickCell
-        pick={kidsPick}
-        game={game}
-        result={result}
-        isCorrect={kidsCorrect}
-        color={PLAYERS[1].color}
-        align="right"
-      />
+      <PickCell pick={kidsPick} game={game} result={result} isCorrect={kidsCorrect} color={PLAYERS[1].color} align="right" />
     </div>
   )
 }
 
 function PickCell({ pick, game, result, isCorrect, color, align }) {
-  const isUpset = pick && (
-    (pick === game.bottom.name && game.top.seed < game.bottom.seed) ||
-    (pick === game.top.name && game.top.seed > game.bottom.seed)
-  )
-  // Actually: upset = picking the higher number seed
   const pickedSeed = pick === game.top.name ? game.top.seed : game.bottom.seed
-  const opposingSeed = pick === game.top.name ? game.bottom.seed : game.top.seed
-  const isActualUpset = pickedSeed > opposingSeed
-
-  const bg = result
-    ? isCorrect
-      ? 'rgba(0,255,157,0.08)'
-      : 'rgba(255,45,122,0.06)'
-    : `${color}08`
-
-  const borderColor = result
-    ? isCorrect ? 'rgba(0,255,157,0.3)' : 'rgba(255,45,122,0.2)'
-    : `${color}22`
+  const opposeSeed = pick === game.top.name ? game.bottom.seed : game.top.seed
+  const isUpset = pickedSeed > opposeSeed
+  const bg = result ? (isCorrect ? 'rgba(0,255,157,0.07)' : 'rgba(255,45,122,0.05)') : `${color}07`
+  const border = result ? (isCorrect ? 'rgba(0,255,157,0.25)' : 'rgba(255,45,122,0.15)') : `${color}1a`
 
   return (
-    <div style={{
-      background: bg,
-      border: `1px solid ${borderColor}`,
-      borderRadius: '6px',
-      padding: '8px 10px',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '6px',
-      flexDirection: align === 'right' ? 'row-reverse' : 'row',
-    }}>
-      <div style={{ flex: 1 }}>
-        <div style={{
-          fontFamily: "'Rajdhani', sans-serif",
-          fontWeight: 700,
-          fontSize: '13px',
-          color: result ? (isCorrect ? 'var(--neon-green)' : '#ff2d7a') : 'var(--text)',
-          textAlign: align,
-          letterSpacing: '0.3px',
-        }}>{pick}</div>
-        <div style={{
-          fontFamily: "'Share Tech Mono', monospace",
-          fontSize: '7px',
-          color: 'var(--muted)',
-          textAlign: align,
-          letterSpacing: '1px',
-        }}>
-          {pick === game.top.name ? game.top.seed : game.bottom.seed} seed
-          {isActualUpset && <span style={{ color: color, marginLeft: '4px' }}>↑UPSET</span>}
+    <div style={{ background: bg, border: `1px solid ${border}`, borderRadius: '6px', padding: '8px 10px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexDirection: align === 'right' ? 'row-reverse' : 'row' }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: '13px', color: result ? (isCorrect ? 'var(--green)' : 'var(--pink)') : 'var(--text)', textAlign: align, letterSpacing: '0.3px', lineHeight: 1.2 }}>{pick}</div>
+          <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '7px', color: 'var(--muted)', textAlign: align, marginTop: '2px' }}>
+            {pickedSeed} seed{isUpset && <span style={{ color, marginLeft: '3px' }}>↑</span>}
+          </div>
         </div>
+        {result && <span style={{ fontSize: '11px', flexShrink: 0 }}>{isCorrect ? '✅' : '❌'}</span>}
       </div>
-      {result && (
-        <span style={{ fontSize: '12px' }}>{isCorrect ? '✅' : '❌'}</span>
-      )}
     </div>
   )
 }
