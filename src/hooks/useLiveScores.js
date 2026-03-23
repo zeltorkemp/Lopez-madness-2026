@@ -3,8 +3,9 @@ import { FIRST_ROUND, ESPN_ALIASES, KNOWN_RESULTS } from '../data/brackets.js'
 
 const DEFAULT_RESULTS = {
   firstRound: new Array(32).fill(null),
-  eliteEight: new Array(8).fill(null),
-  finalFour: new Array(4).fill(null),
+  secondRound: new Array(16).fill(null),
+  eliteEight: new Array(4).fill(null),
+  finalFour: new Array(2).fill(null),
   champion: null,
   liveScores: {},
 }
@@ -14,24 +15,14 @@ function normalize(name) {
   return ESPN_ALIASES[name] || name
 }
 
-function matchGame(espnGame) {
-  const home = normalize(espnGame.homeTeam)
-  const away = normalize(espnGame.awayTeam)
-  return FIRST_ROUND.find(g => {
-    const t = g.top.name, b = g.bottom.name
-    return (t === home || t === away) && (b === home || b === away)
-  })
-}
-
 export function useLiveScores() {
-  // Start with known hardcoded results immediately
   const [bracketResults, setBracketResults] = useState({
     ...DEFAULT_RESULTS,
     firstRound: [...KNOWN_RESULTS.firstRound],
-    liveScores: {},
+    secondRound: [...KNOWN_RESULTS.secondRound],
   })
   const [liveGames, setLiveGames] = useState([])
-  const [lastUpdated, setLastUpdated] = useState('Hardcoded Day 1 results')
+  const [lastUpdated, setLastUpdated] = useState('Updated through Round of 32')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -47,36 +38,32 @@ export function useLiveScores() {
       setLastUpdated(data.updated)
       setError(null)
 
-      // Merge ESPN live/final results on top of known results
       const firstRound = [...KNOWN_RESULTS.firstRound]
       const liveScores = {}
 
       games.forEach(g => {
         try {
-          const match = matchGame(g)
+          const home = normalize(g.homeTeam)
+          const away = normalize(g.awayTeam)
+          const match = FIRST_ROUND.find(fr => {
+            return (fr.top.name === home || fr.top.name === away) &&
+                   (fr.bottom.name === home || fr.bottom.name === away)
+          })
           if (!match) return
-          const idx = match.id - 1
           liveScores[match.id] = {
-            homeTeam: normalize(g.homeTeam),
-            awayTeam: normalize(g.awayTeam),
-            homeScore: g.homeScore,
-            awayScore: g.awayScore,
-            inProgress: g.inProgress,
-            completed: g.completed,
-            clock: g.clock,
-            period: g.period,
+            homeTeam: home, awayTeam: away,
+            homeScore: g.homeScore, awayScore: g.awayScore,
+            inProgress: g.inProgress, completed: g.completed,
+            clock: g.clock, period: g.period,
           }
-          if (g.completed && g.winner) firstRound[idx] = normalize(g.winner)
+          if (g.completed && g.winner) firstRound[match.id - 1] = normalize(g.winner)
         } catch (e) {}
       })
 
-      setBracketResults({ ...DEFAULT_RESULTS, firstRound, liveScores })
+      setBracketResults(prev => ({ ...prev, firstRound, liveScores }))
     } catch (err) {
       console.warn('ESPN API failed, using hardcoded results:', err.message)
       setError(err.message)
-      // Keep hardcoded results on API failure
-    } finally {
-      setLoading(false)
     }
   }, [])
 
