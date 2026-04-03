@@ -1,45 +1,17 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg: #050810;
-  --bg2: #080d18;
-  --surface: #0c1422;
-  --surface2: #111d30;
-  --border: #162035;
-  --border2: #1e2e48;
-  --blue: #00c8ff;
-  --orange: #ff6b00;
-  --green: #00ff9d;
-  --pink: #ff2d7a;
-  --yellow: #ffe500;
-  --purple: #b966ff;
-  --text: #e8f0ff;
-  --text2: #7a96b8;
-  --muted: #3a5272;
-  --dad: #00c8ff;
-  --kids: #ff6b00;
-  --radius: 12px;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050810;--bg2:#080d18;--surface:#0c1422;--surface2:#111d30;
+  --border:#162035;--border2:#1e2e48;
+  --blue:#00c8ff;--orange:#ff6b00;--green:#00ff9d;--pink:#ff2d7a;
+  --yellow:#ffe500;--purple:#b966ff;
+  --text:#e8f0ff;--text2:#7a96b8;--muted:#3a5272;
+  --dad:#00c8ff;--kids:#ff6b00;--radius:12px;
 }
-
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Rajdhani', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 2px; }
-
-@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
-@keyframes scanline { 0% { transform:translateY(-100vh); } 100% { transform:translateY(100vh); } }
-@keyframes shimmer { 0% { transform:translateX(-100%); } 100% { transform:translateX(100%); } }
-@keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-@keyframes glow { 0%,100% { opacity:0.5; } 50% { opacity:1; } }
-
-.fade-up { animation: fadeUp 0.5s ease both; }
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--blue);border-radius:2px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.fade-up{animation:fadeUp 0.5s ease both}
