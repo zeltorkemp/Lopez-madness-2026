@@ -67,7 +67,7 @@ function SpeedMath() {
         <div className="test-tile" style={{ textAlign: 'center' }}><span className="small">Average speed</span><div className="display" style={{ fontSize: 40 }}>{mph}<span style={{ fontSize: 18 }}> mph</span></div></div>
         <div className="test-tile" style={{ textAlign: 'center' }}><span className="small">Feet per second</span><div className="display" style={{ fontSize: 40 }}>{fps.toFixed(1)}</div></div>
       </div>
-      <p style={{ margin: '14px 0 0', color: '#CBD6EA', lineHeight: 1.5 }}>Cut just <b>0.1 seconds</b> and you finish about <b className="mono">{ahead} feet</b> ahead of the old you. That is the difference between catching the ball and watching it.</p>
+      <p style={{ margin: '14px 0 0', color: 'var(--soft)', lineHeight: 1.5 }}>Cut just <b>0.1 seconds</b> and you finish about <b className="mono">{ahead} feet</b> ahead of the old you. That is the difference between catching the ball and watching it.</p>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { WEEKS, SESSION, DRILLS } from '../data/program.js'
 
-const COLORS = ['#16356E', '#2B5BB8', '#1E4A94', '#C62828', '#E53935', '#0F2A5A']
+const COLORS = ['#1E2738', '#2A3449', '#3A4560', '#B3261E', '#FF3B30', '#101727']
 
 export default function Plan() {
   const [sel, setSel] = useState(1)
@@ -23,7 +23,7 @@ export default function Plan() {
         <div className="card" style={{ marginTop: 12 }}>
           <span className={`tag ${week.test ? 'test' : ''}`}>{week.test ? 'Timed test day' : week.focus}</span>
           <h3 style={{ fontSize: 30, margin: '10px 0 6px' }}>{week.title}</h3>
-          <p style={{ margin: 0, color: '#CBD6EA', lineHeight: 1.5 }}>{week.blurb}</p>
+          <p style={{ margin: 0, color: 'var(--soft)', lineHeight: 1.5 }}>{week.blurb}</p>
           <div style={{ marginTop: 14 }}>
             {week.drills.map(id => (
               <div className="drill" key={id}>
@@ -34,7 +34,7 @@ export default function Plan() {
             ))}
           </div>
           {week.home.length > 0 && (
-            <div style={{ marginTop: 14, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12, padding: '12px 14px' }}>
+            <div style={{ marginTop: 14, background: '#0A0F1A', borderLeft: '3px solid #FFD34D', padding: '12px 14px' }}>
               <span className="tag">At-home challenge · 10 min</span>
               {week.home.map(id => (
                 <div className="drill" key={id}>

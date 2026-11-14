@@ -5,12 +5,11 @@ import { overallImprovement } from '../lib/stats.js'
 
 function useCountdown(dateStr) {
   const [now, setNow] = useState(Date.now())
-  useEffect(() => { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t) }, [])
+  useEffect(() => { const t = setInterval(() => setNow(Date.now()), 30000); return () => clearInterval(t) }, [])
   if (!dateStr) return null
-  const diff = new Date(`${dateStr}T13:00:00`).getTime() - now
+  const diff = new Date(`${dateStr}T09:00:00`).getTime() - now
   if (diff <= 0) return null
-  const d = Math.floor(diff / 86400000), h = Math.floor(diff / 3600000) % 24, m = Math.floor(diff / 60000) % 60, s = Math.floor(diff / 1000) % 60
-  return { d, h, m, s }
+  return { d: Math.floor(diff / 86400000), h: Math.floor(diff / 3600000) % 24, m: Math.floor(diff / 60000) % 60 }
 }
 
 export default function Home({ go, athletes, openAthlete }) {
@@ -19,73 +18,82 @@ export default function Home({ go, athletes, openAthlete }) {
   const cd = useCountdown(PROGRAM.startDate)
   const spotsLeft = count == null ? PROGRAM.cap : Math.max(PROGRAM.cap - count.confirmed, 0)
   const full = spotsLeft === 0
-  const top = useMemo(() => [...athletes].sort((a, b) => overallImprovement(b) - overallImprovement(a))[0], [athletes])
+  const ranked = useMemo(() => [...athletes].sort((a, b) => overallImprovement(b) - overallImprovement(a)).slice(0, 3), [athletes])
+  const sample = ranked.some(a => a.sample)
   const fundPct = Math.min(100, Math.round((FUND.raised / FUND.goal) * 100))
 
   return (
     <>
       <section className="hero">
-        <div className="speedlines" aria-hidden="true">
-          {[12, 30, 48, 66, 84].map((t, i) => <i key={t} style={{ top: `${t}%`, width: `${40 + i * 12}%`, animationDelay: `${i * 0.27}s` }} />)}
-        </div>
-        <p className="kicker">Free offseason speed clinic · Ages {PROGRAM.ages}</p>
-        <h1>Speed Work<span>Sundays</span></h1>
-        <p className="sub">{PROGRAM.tagline} Ten Sundays at {PROGRAM.location.replace(' track', '')}.</p>
-
-        {cd ? (
-          <div className="chips" aria-label="Countdown to Week 1">
-            <div className="chip"><b className="mono">{cd.d}</b><span>days</span></div>
-            <div className="chip"><b className="mono">{cd.h}</b><span>hours</span></div>
-            <div className="chip"><b className="mono">{cd.m}</b><span>min</span></div>
-            <div className="chip"><b className="mono">{cd.s}</b><span>sec</span></div>
-          </div>
-        ) : (
-          <div className="chips">
-            <div className="chip"><b>10</b><span>Sundays</span></div>
-            <div className="chip"><b>3</b><span>Timed tests</span></div>
-            <div className="chip"><b>{PROGRAM.cap}</b><span>Spots</span></div>
-            <div className="chip"><b>$0</b><span>Cost</span></div>
-          </div>
-        )}
-
-        <div className="btn-row">
-          <a className="btn btn-red" href="#join">{full ? 'Join the waitlist' : 'Reserve a spot'}</a>
-          <a className="btn btn-ghost" href="#lab">Test your reaction</a>
+        <picture>
+          <source media="(max-width: 700px)" srcSet="/hero-sm.jpg" />
+          <img src="/hero.jpg" alt="Youth athlete sprinting" />
+        </picture>
+        <div className="hero-shade" aria-hidden="true" />
+        <div className="hero-copy">
+          <p className="eyebrow">Free · {PROGRAM.weeks} Sundays · Ages {PROGRAM.ages}</p>
+          <h1>Speed<br />Work<br />Sundays</h1>
         </div>
       </section>
 
-      <section className="section card" aria-label="Spots remaining">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
-          <h2 style={{ fontSize: 22, margin: 0 }}>{full ? 'Full: join the waitlist' : `${spotsLeft} of ${PROGRAM.cap} spots left`}</h2>
-          <span className="small">{PROGRAM.startDate ? `Starts ${new Date(`${PROGRAM.startDate}T12:00:00`).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : PROGRAM.startLabel}</span>
-        </div>
-        <div className="meter"><i style={{ width: `${((PROGRAM.cap - spotsLeft) / PROGRAM.cap) * 100}%` }} /></div>
-        {full && <a className="btn btn-red" href="#join" style={{ width: '100%', marginTop: 14 }}>Join the waitlist</a>}
+      <section className="intro">
+        <p className="lede">Get timed on day one. Get timed again in Week 10. See the difference on your own Speed Card.</p>
+        <a className="btn btn-red btn-block" href="#join">{full ? 'Join the waitlist' : 'Reserve a spot'}</a>
+      </section>
+
+      <section className="scoreboard" aria-label="Key details">
+        {cd ? (
+          <>
+            <div><b>{cd.d}</b><span>Days</span></div>
+            <div><b>{cd.h}</b><span>Hours</span></div>
+            <div><b>{cd.m}</b><span>Min</span></div>
+          </>
+        ) : (
+          <>
+            <div><b>{full ? 'FULL' : spotsLeft}</b><span>{full ? 'Waitlist open' : 'Spots left'}</span></div>
+            <div><b>9:00</b><span>Sundays AM</span></div>
+            <div><b>$0</b><span>Cost</span></div>
+          </>
+        )}
       </section>
 
       <section className="section">
         <h2>How it works</h2>
-        <div className="grid-3">
-          <div className="card step"><b>01</b><h3>Get timed</h3><p>Week 1: 20-yard dash, 5-10-5 shuttle and broad jump.</p></div>
-          <div className="card step"><b>02</b><h3>Train smart</h3><p>Short reps, full rest, real sprint mechanics. 60 minutes every Sunday.</p></div>
-          <div className="card step"><b>03</b><h3>See the proof</h3><p>Retest in Weeks 5 and 10. Your Speed Card shows every gain.</p></div>
-        </div>
+        <ol className="steps">
+          <li><span className="num">01</span><div><b>Get timed</b><p>Week 1: 20-yard dash, 5-10-5 shuttle and broad jump.</p></div></li>
+          <li><span className="num">02</span><div><b>Train smart</b><p>Short reps, full rest, real sprint mechanics. Jumps, top speed and races every Sunday.</p></div></li>
+          <li><span className="num">03</span><div><b>See the proof</b><p>Retest in Weeks 5 and 10. Your Speed Card shows every gain.</p></div></li>
+        </ol>
       </section>
 
-      {top && (
+      {ranked.length > 0 && (
         <section className="section">
-          <h2>Most Improved<small>{top.sample ? 'Sample athlete. Real results start after Week 1.' : 'The scoreboard is your own progress, not who started fastest.'}</small></h2>
-          <button className="row top1" onClick={() => openAthlete(top)}>
-            <span className="rank" aria-hidden="true">★</span>
-            <span className="who"><b>{top.name}</b><span>Age {top.age} · {top.sport}</span></span>
-            <span className="gain">+{overallImprovement(top)}%<small>overall</small></span>
-          </button>
-          <button className="btn btn-ghost" style={{ width: '100%', marginTop: 4 }} onClick={() => go('board')}>See the full Speed Board</button>
+          <h2>Most Improved</h2>
+          <p className="sub">The scoreboard is your own progress, not who started fastest.{sample ? ' Sample athletes shown until Week 1.' : ''}</p>
+          <div className="board">
+            {ranked.map((a, i) => (
+              <button key={a.id} className="board-row" onClick={() => openAthlete(a)}>
+                <span className={`rank ${i === 0 ? 'gold' : ''}`}>{String(i + 1).padStart(2, '0')}</span>
+                <span className="who"><b>{a.name}</b> <span>· {a.age}</span></span>
+                <span className="gain">+{overallImprovement(a)}%</span>
+              </button>
+            ))}
+          </div>
+          <button className="btn btn-ghost btn-block" style={{ marginTop: 16 }} onClick={() => go('board')}>Full Speed Board</button>
         </section>
       )}
 
-      <section className="section card">
-        <h2 style={{ fontSize: 24 }}>The details</h2>
+      <section className="section">
+        <h2>What gets timed</h2>
+        <div className="tested">
+          <div><b>20-yard dash</b><span>Weeks 1, 5, 10</span></div>
+          <div><b>5-10-5 shuttle</b><span>Weeks 1, 5, 10</span></div>
+          <div><b>Broad jump</b><span>Weeks 1, 5, 10</span></div>
+        </div>
+      </section>
+
+      <section className="section">
+        <h2>The details</h2>
         <dl className="info-list">
           <div><dt>Who</dt><dd>Ages {PROGRAM.ages}, any sport</dd></div>
           <div><dt>When</dt><dd>Sundays, {PROGRAM.time}<br /><span className="small">{PROGRAM.startLabel}</span></dd></div>
@@ -95,16 +103,17 @@ export default function Home({ go, athletes, openAthlete }) {
         </dl>
       </section>
 
-      <section className="section card">
-        <h2 style={{ fontSize: 24 }}>Equipment Fund</h2>
-        <p style={{ color: '#CBD6EA', margin: '6px 0 14px', lineHeight: 1.5 }}>100% of donations go to equipment: timing lasers, parachutes, speed ladders and guest coaches. Every purchase gets posted here.</p>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, marginBottom: 8 }}>
-          <span className="mono">${FUND.raised}</span><span className="small">goal ${FUND.goal}</span>
+      <section className="section">
+        <h2>Equipment Fund</h2>
+        <p className="sub">100% of donations buy gear: timing lasers, parachutes, ladders and guest coaches. Every purchase gets posted here.</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+          <span className="mono" style={{ fontSize: 22, color: 'var(--gold)' }}>${FUND.raised}</span>
+          <span className="small">goal ${FUND.goal}</span>
         </div>
         <div className="meter"><i style={{ width: `${fundPct}%` }} /></div>
-        <div className="btn-row" style={{ marginTop: 16 }}>
-          <a className="btn btn-red" href={PROGRAM.cashAppUrl} target="_blank" rel="noreferrer" style={{ flex: 1 }}>Donate {PROGRAM.cashApp}</a>
-          <a className="btn btn-ghost" href="#join" style={{ flex: 1 }}>See the gear list</a>
+        <div className="btn-row">
+          <a className="btn btn-red" href={PROGRAM.cashAppUrl} target="_blank" rel="noreferrer">Donate {PROGRAM.cashApp}</a>
+          <a className="btn btn-ghost" href="#join">See the gear list</a>
         </div>
       </section>
     </>

@@ -19,7 +19,7 @@ export default function SpeedCard({ athlete, onClose }) {
       <div className="sheet" role="dialog" aria-modal="true" aria-label={`${athlete.name} Speed Card`} onClick={e => e.stopPropagation()}>
         <div className="sheet-head">
           <div>
-            <p className="small" style={{ margin: 0, fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#FF8A80' }}>Speed Card</p>
+            <p className="small" style={{ margin: 0, fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--red)' }}>Speed Card</p>
             <h2 style={{ fontSize: 36 }}>{athlete.name}</h2>
             <p className="small" style={{ margin: '2px 0 0' }}>Age {athlete.age} · {athlete.sport}</p>
             {athlete.sample && <p className="sample-note" style={{ margin: '10px 0 0' }}>Sample athlete for preview</p>}
@@ -29,7 +29,7 @@ export default function SpeedCard({ athlete, onClose }) {
 
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, margin: '18px 0' }}>
           <div className="big-gain">+{overall}%</div>
-          <p style={{ margin: '0 0 8px', color: '#CBD6EA', lineHeight: 1.4 }}>faster and stronger overall{dash ? <><br />20-yard average speed: <b className="mono">{dashMph(dash)} mph</b></> : null}</p>
+          <p style={{ margin: '0 0 8px', color: 'var(--soft)', lineHeight: 1.4 }}>faster and stronger overall{dash ? <><br />20-yard average speed: <b className="mono">{dashMph(dash)} mph</b></> : null}</p>
         </div>
 
         <div style={{ display: 'grid', gap: 10 }}>
@@ -49,8 +49,8 @@ export default function SpeedCard({ athlete, onClose }) {
                     <LineChart data={data} margin={{ top: 10, right: 22, left: 22, bottom: 0 }}>
                       <XAxis dataKey="week" interval={0} padding={{ left: 4, right: 4 }} tick={{ fill: '#A9B8D6', fontSize: 11 }} axisLine={false} tickLine={false} />
                       <YAxis hide reversed={t.lowerIsBetter} domain={['dataMin', 'dataMax']} />
-                      <Tooltip formatter={v => [fmt(t.id, v), 'Result']} contentStyle={{ background: '#0A1F44', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 10 }} labelStyle={{ color: '#fff' }} />
-                      <Line type="monotone" dataKey="v" stroke="#E53935" strokeWidth={3} dot={{ r: 5, fill: '#fff', stroke: '#E53935', strokeWidth: 2 }} connectNulls isAnimationActive={false} />
+                      <Tooltip formatter={v => [fmt(t.id, v), 'Result']} contentStyle={{ background: '#0A0F1A', border: '1px solid #1E2738', borderRadius: 0 }} labelStyle={{ color: '#fff' }} />
+                      <Line type="monotone" dataKey="v" stroke="#FF3B30" strokeWidth={3} dot={{ r: 5, fill: '#fff', stroke: '#FF3B30', strokeWidth: 2 }} connectNulls isAnimationActive={false} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>

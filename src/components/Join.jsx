@@ -67,14 +67,14 @@ export default function Join() {
             <label className="check"><input type="checkbox" checked={f.photo_ok} onChange={set('photo_ok')} /> OK to show my athlete's first name and last initial on the Speed Board.</label>
             <label className="check"><input type="checkbox" checked={f.updates_ok} onChange={set('updates_ok')} /> Tell me about extra sessions and future programs.</label>
             <button className="btn btn-red" style={{ width: '100%' }} disabled={status === 'sending'}>{status === 'sending' ? 'Saving…' : full ? 'Join the waitlist' : 'Reserve my spot'}</button>
-            {status === 'error' && <p role="alert" style={{ color: '#FF8A80' }}>Something went wrong. Please try again.</p>}
+            {status === 'error' && <p role="alert" style={{ color: 'var(--red)' }}>Something went wrong. Please try again.</p>}
           </form>
         )}
       </section>
 
       <section className="section card">
         <h2 style={{ fontSize: 24 }}>Want to help?</h2>
-        <p style={{ color: '#CBD6EA', lineHeight: 1.5, margin: '6px 0 12px' }}>The clinic is free. 100% of donations go to equipment, and every purchase is posted on the site.</p>
+        <p style={{ color: 'var(--soft)', lineHeight: 1.5, margin: '6px 0 12px' }}>The clinic is free. 100% of donations go to equipment, and every purchase is posted on the site.</p>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, margin: '4px 0 8px' }}><span className="mono">${FUND.raised} raised</span><span className="small">goal ${FUND.goal}</span></div>
         <div className="meter" style={{ marginBottom: 8 }}><i style={{ width: `${Math.min(100, (FUND.raised / FUND.goal) * 100)}%` }} /></div>
         {FUND.items.map(i => (
