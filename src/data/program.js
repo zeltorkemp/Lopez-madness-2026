@@ -1,5 +1,6 @@
 export const TESTS = [
-  { id: 'dash', name: '20-Yard Dash', short: '20 YD', unit: 's', lowerIsBetter: true, skill: 'Acceleration' },
+  { id: 'forty', name: '40-Yard Dash', short: '40 YD', unit: 's', lowerIsBetter: true, skill: 'Speed' },
+  { id: 'dash', name: '20-Yard Split', short: '20 YD', unit: 's', lowerIsBetter: true, skill: 'Acceleration, timed inside the 40' },
   { id: 'shuttle', name: '5-10-5 Shuttle', short: '5-10-5', unit: 's', lowerIsBetter: true, skill: 'Change of direction' },
   { id: 'jump', name: 'Broad Jump', short: 'JUMP', unit: 'in', lowerIsBetter: false, skill: 'Explosive power' },
 ]
@@ -8,11 +9,11 @@ export const TEST_WEEKS = [1, 5, 10]
 
 // Every session also includes: jump block, a small top-speed dose (non-test weeks), and a race finish.
 export const WEEKS = [
-  { n: 1, title: 'Baseline Day', focus: 'Testing', blurb: 'Learn the warm-up and get your first official times in all three tests.', drills: ['wall', 'askip', 'pogo'], home: ['bridge', 'balance'], test: true },
+  { n: 1, title: 'Baseline Day', focus: 'Testing', blurb: 'Learn the warm-up and get your first official times: the 40 (with a 20-yard split), 5-10-5 shuttle and broad jump.', drills: ['wall', 'askip', 'pogo'], home: ['bridge', 'balance'], test: true },
   { n: 2, title: 'Run Tall', focus: 'Foundations', blurb: 'Posture and arm action. Fast arms make fast legs.', drills: ['wall', 'askip', 'arms', 'pogo', 'flying'], home: ['bridge', 'arms'] },
   { n: 3, title: 'Own the Start', focus: 'Acceleration', blurb: 'Two-point and falling starts. Win the first three steps.', drills: ['falling', 'askip', 'skiph', 'flying'], home: ['lunge', 'pogo'] },
   { n: 4, title: 'Push the Ground', focus: 'Acceleration', blurb: 'Big pushes out of the start with partner-resisted sprints.', drills: ['falling', 'partner', 'skiph', 'flying'], home: ['lunge', 'bridge'] },
-  { n: 5, title: 'Midpoint Retest', focus: 'Testing', blurb: 'Same three tests, same rules. See your first gains on your Speed Card.', drills: ['askip', 'pogo'], home: ['balance', 'bridge'], test: true },
+  { n: 5, title: 'Midpoint Retest', focus: 'Testing', blurb: 'Same tests, same rules. See your first gains on your Speed Card.', drills: ['askip', 'pogo'], home: ['balance', 'bridge'], test: true },
   { n: 6, title: 'Brake and Cut', focus: 'Agility', blurb: 'Stopping under control so you can change direction faster.', drills: ['decel', 'ladder', 'bound', 'flying'], home: ['balance', 'lunge'] },
   { n: 7, title: 'React', focus: 'Agility', blurb: 'Start on a signal, not on your own. Game speed.', drills: ['react', 'ladder', 'pogo', 'flying'], home: ['react', 'bridge'] },
   { n: 8, title: 'Shuttle Master', focus: 'Agility', blurb: 'Clean 5-10-5 footwork: low hips, plant, push.', drills: ['decel', 'react', 'bound', 'flying'], home: ['lunge', 'balance'] },

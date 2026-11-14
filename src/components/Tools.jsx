@@ -162,7 +162,7 @@ function Timer() {
 /* ---------- goal calculator ---------- */
 const LIMITS = { dash: [2.5, 8], forty: [4, 12], shuttle: [4, 10], jump: [20, 130] }
 const YARDS = { dash: 20, forty: 40 }
-const GOAL_TESTS = [TESTS[0], { id: 'forty', name: '40-Yard Dash', unit: 's', lowerIsBetter: true }, ...TESTS.slice(1)]
+const GOAL_TESTS = TESTS
 const mph = (yards, s) => Math.round(((yards * 3) / 5280 / (s / 3600)) * 10) / 10
 
 function Goal() {
@@ -226,7 +226,7 @@ function Goal() {
         </div>
         <div className="field">
           <label htmlFor="g-val">Week 1 {t.unit === 's' ? 'time (sec)' : 'jump (inches)'}</label>
-          <input id="g-val" inputMode="decimal" type="number" step={t.unit === 's' ? '0.01' : '1'} placeholder={t.unit === 's' ? ({ dash: '4.32', forty: '7.10', shuttle: '6.40' }[test]) : '52'} value={raw} onChange={onChange} aria-invalid={!!err} />
+          <input id="g-val" inputMode="decimal" type="number" step={t.unit === 's' ? '0.01' : '1'} placeholder={t.unit === 's' ? ({ dash: '4.32', forty: '7.40', shuttle: '6.40' }[test]) : '52'} value={raw} onChange={onChange} aria-invalid={!!err} />
         </div>
       </div>
       {err && <p role="alert" style={{ color: 'var(--red)', fontSize: 13, margin: '-6px 0 10px' }}>{err}</p>}

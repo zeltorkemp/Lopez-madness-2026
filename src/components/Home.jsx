@@ -83,7 +83,7 @@ export default function Home({ go, athletes, openAthlete }) {
       <section className="section">
         <h2>How it works</h2>
         <ol className="steps">
-          <li><span className="num">01</span><div><b>Get timed</b><p>Week 1: 20-yard dash, 5-10-5 shuttle and broad jump.</p></div></li>
+          <li><span className="num">01</span><div><b>Get timed</b><p>Week 1: 40-yard dash with a 20-yard split, 5-10-5 shuttle and broad jump.</p></div></li>
           <li><span className="num">02</span><div><b>Train smart</b><p>Short reps, full rest, real sprint mechanics. Jumps, top speed and races every Sunday.</p></div></li>
           <li><span className="num">03</span><div><b>See the proof</b><p>Retest in Weeks 5 and 10. Your Speed Card shows every gain.</p></div></li>
         </ol>
@@ -109,7 +109,8 @@ export default function Home({ go, athletes, openAthlete }) {
       <section className="section">
         <h2>What gets timed</h2>
         <div className="tested">
-          <div><b>20-yard dash</b><span>Weeks 1, 5, 10</span></div>
+          <div><b>40-yard dash</b><span>Weeks 1, 5, 10</span></div>
+          <div><b>20-yard split</b><span>Inside the 40</span></div>
           <div><b>5-10-5 shuttle</b><span>Weeks 1, 5, 10</span></div>
           <div><b>Broad jump</b><span>Weeks 1, 5, 10</span></div>
         </div>

@@ -28,10 +28,10 @@ export function fmt(testId, v) {
   return t.unit === 's' ? `${v.toFixed(2)}s` : `${Math.round(v)}"`
 }
 
-// 20-yard dash seconds -> average mph
-export function dashMph(seconds) {
+// seconds over a distance in yards -> average mph (default 20 yards)
+export function dashMph(seconds, yards = 20) {
   if (!seconds) return 0
-  return Math.round(((20 * 3) / 5280 / (seconds / 3600)) * 10) / 10
+  return Math.round(((yards * 3) / 5280 / (seconds / 3600)) * 10) / 10
 }
 
 export { testById, lastValue }

@@ -6,7 +6,8 @@ import { logTime, resetDemo } from '../lib/store.js'
 export default function Coach({ athletes: all, onSaved }) {
   const athletes = LIVE ? all.filter(a => !a.sample) : all
   const [athleteId, setAthleteId] = useState('')
-  const [testId, setTestId] = useState('dash')
+  const [testId, setTestId] = useState('forty')
+  const [split, setSplit] = useState('')
   const [weekIndex, setWeekIndex] = useState(0)
   const [running, setRunning] = useState(false)
   const [elapsed, setElapsed] = useState(0)
@@ -20,19 +21,27 @@ export default function Coach({ athletes: all, onSaved }) {
 
   useEffect(() => () => cancelAnimationFrame(raf.current), [])
   const tick = () => { setElapsed((performance.now() - startAt.current) / 1000); raf.current = requestAnimationFrame(tick) }
+  const isForty = testId === 'forty'
+  const now = () => ((performance.now() - startAt.current) / 1000).toFixed(2)
+  // 40s: START -> SPLIT (runner crosses 20) -> STOP. Other timed tests: START -> STOP.
   const toggle = () => {
-    if (running) { cancelAnimationFrame(raf.current); setRunning(false); setManual(((performance.now() - startAt.current) / 1000).toFixed(2)) }
-    else { startAt.current = performance.now(); setElapsed(0); setRunning(true); setMsg(''); raf.current = requestAnimationFrame(tick) }
+    if (!running) { startAt.current = performance.now(); setElapsed(0); setSplit(''); setManual(''); setRunning(true); setMsg(''); raf.current = requestAnimationFrame(tick); return }
+    if (isForty && !split) { setSplit(now()); return }
+    cancelAnimationFrame(raf.current); setRunning(false); setManual(now())
   }
+  const btnLabel = !running ? 'START' : isForty && !split ? 'SPLIT at 20' : 'STOP'
 
   const save = async () => {
     const value = Number(manual)
+    const splitVal = Number(split)
     if (!athleteId || !value) { setMsg('Pick an athlete and enter a result.'); return }
+    if (isForty && split && !(splitVal > 0 && splitVal < value)) { setMsg('The 20-yard split has to be less than the 40 time.'); return }
     try {
       await logTime({ athleteId, testId, weekIndex, value, pin })
+      if (isForty && splitVal) await logTime({ athleteId, testId: 'dash', weekIndex, value: splitVal, pin })
       const a = athletes.find(x => x.id === athleteId)
-      setMsg(`Saved ${a?.name}: ${test.name} ${value}${test.unit === 's' ? 's' : ' in'} (Week ${TEST_WEEKS[weekIndex]})`)
-      setManual(''); setElapsed(0); onSaved()
+      setMsg(`Saved ${a?.name}: ${test.name} ${value}${test.unit === 's' ? 's' : ' in'}${isForty && splitVal ? `, 20-yard split ${splitVal}s` : ''} (Week ${TEST_WEEKS[weekIndex]})`)
+      setManual(''); setSplit(''); setElapsed(0); onSaved()
     } catch {
       setMsg(LIVE ? 'Not saved. Check the coach PIN.' : 'Not saved.')
     }
@@ -50,7 +59,7 @@ export default function Coach({ athletes: all, onSaved }) {
         </div>
         <div className="grid-2">
           <div className="field"><label htmlFor="tst">Test</label>
-            <select id="tst" value={testId} onChange={e => { setTestId(e.target.value); setManual('') }}>
+            <select id="tst" value={testId} onChange={e => { setTestId(e.target.value); setManual(''); setSplit('') }}>
               {TESTS.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
@@ -64,7 +73,8 @@ export default function Coach({ athletes: all, onSaved }) {
         {test.unit === 's' && (
           <>
             <div className="stopwatch" aria-live="off">{elapsed.toFixed(2)}</div>
-            <button className={`btn huge ${running ? 'btn-ghost' : 'btn-red'}`} onClick={toggle}>{running ? 'STOP' : 'START'}</button>
+            <button className={`btn huge ${running ? 'btn-ghost' : 'btn-red'}`} onClick={toggle}>{btnLabel}</button>
+            {isForty && <p className="small" style={{ margin: '8px 0 0', textAlign: 'center' }}>Stand even with the 20-yard cone. Tap SPLIT as they pass it, STOP at 40.</p>}
           </>
         )}
 
@@ -72,6 +82,12 @@ export default function Coach({ athletes: all, onSaved }) {
           <label htmlFor="res">{test.unit === 's' ? 'Time in seconds (edit if needed)' : 'Distance in inches'}</label>
           <input id="res" type="number" step={test.unit === 's' ? '0.01' : '1'} inputMode="decimal" value={manual} onChange={e => setManual(e.target.value)} />
         </div>
+        {isForty && (
+          <div className="field">
+            <label htmlFor="spl">20-yard split in seconds (saves to the 20-Yard Split)</label>
+            <input id="spl" type="number" step="0.01" inputMode="decimal" value={split} onChange={e => setSplit(e.target.value)} />
+          </div>
+        )}
         {LIVE && <div className="field"><label htmlFor="pin">Coach PIN</label><input id="pin" type="password" value={pin} onChange={e => setPin(e.target.value)} /></div>}
         <button className="btn btn-red" style={{ width: '100%' }} onClick={save}>Save result</button>
         {msg && <p role="status" style={{ marginBottom: 0 }}>{msg}</p>}

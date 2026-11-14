@@ -12,6 +12,7 @@ export default function SpeedCard({ athlete, onClose }) {
   }, [onClose])
 
   const overall = overallImprovement(athlete)
+  const forty = lastValue(athlete.results.forty || [])
   const dash = lastValue(athlete.results.dash || [])
 
   return (
@@ -35,7 +36,7 @@ export default function SpeedCard({ athlete, onClose }) {
 
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, margin: '18px 0' }}>
           <div className="big-gain">+{overall}%</div>
-          <p style={{ margin: '0 0 8px', color: 'var(--soft)', lineHeight: 1.4 }}>faster and stronger overall{dash ? <><br />20-yard average speed: <b className="mono">{dashMph(dash)} mph</b></> : null}</p>
+          <p style={{ margin: '0 0 8px', color: 'var(--soft)', lineHeight: 1.4 }}>faster and stronger overall{forty ? <><br />40-yard average speed: <b className="mono">{dashMph(forty, 40)} mph</b></> : dash ? <><br />20-yard average speed: <b className="mono">{dashMph(dash)} mph</b></> : null}</p>
         </div>
 
         <div style={{ display: 'grid', gap: 10 }}>

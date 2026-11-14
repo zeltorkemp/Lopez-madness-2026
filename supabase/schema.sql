@@ -114,3 +114,9 @@ alter table sws_rsvps
   add column if not exists waiver_agreed_at timestamptz;
 -- sws_signup was replaced with an 11-argument version that requires
 -- emergency contact and typed signature, and stamps waiver_version + time.
+
+-- Migration "speed_work_sundays_add_forty" (2026-11-14): 40-yard dash is an official test.
+-- The 20-yard 'dash' is now the split timed inside the 40.
+alter table sws_results drop constraint if exists sws_results_test_check;
+alter table sws_results add constraint sws_results_test_check check (test in ('forty','dash','shuttle','jump'));
+-- sws_athlete_results view recreated with a 'forty' key (same pattern as the others).
