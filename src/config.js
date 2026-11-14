@@ -16,6 +16,10 @@ export const PROGRAM = {
   cashAppUrl: 'https://cash.app/$SpeedWorkSundays',
 }
 
+// Show sample athletes on the Speed Board until real results are logged.
+// Set to false to hide them even before Week 1.
+export const SHOW_SAMPLE_BOARD = true
+
 export const FUND = {
   goal: 660, // sum of the items below (prices checked Nov 2026)
   raised: 0, // update as donations come in

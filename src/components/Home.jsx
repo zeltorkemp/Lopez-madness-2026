@@ -74,7 +74,7 @@ export default function Home({ go, athletes, openAthlete }) {
 
       {top && (
         <section className="section">
-          <h2>Most Improved<small>The scoreboard is your own progress, not who started fastest.</small></h2>
+          <h2>Most Improved<small>{top.sample ? 'Sample athlete. Real results start after Week 1.' : 'The scoreboard is your own progress, not who started fastest.'}</small></h2>
           <button className="row top1" onClick={() => openAthlete(top)}>
             <span className="rank" aria-hidden="true">★</span>
             <span className="who"><b>{top.name}</b><span>Age {top.age} · {top.sport}</span></span>

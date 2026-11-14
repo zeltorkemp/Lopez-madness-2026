@@ -22,6 +22,7 @@ export default function SpeedCard({ athlete, onClose }) {
             <p className="small" style={{ margin: 0, fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#FF8A80' }}>Speed Card</p>
             <h2 style={{ fontSize: 36 }}>{athlete.name}</h2>
             <p className="small" style={{ margin: '2px 0 0' }}>Age {athlete.age} · {athlete.sport}</p>
+            {athlete.sample && <p className="sample-note" style={{ margin: '10px 0 0' }}>Sample athlete for preview</p>}
           </div>
           <button className="close" onClick={onClose} aria-label="Close Speed Card">×</button>
         </div>

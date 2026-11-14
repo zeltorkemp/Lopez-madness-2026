@@ -159,3 +159,5 @@ input[type=range] { width: 100%; accent-color: var(--red); min-height: 44px; }
 .waiver { max-height: 220px; overflow-y: auto; background: var(--ink); border: 1px solid rgba(255,255,255,0.25); border-radius: 12px; padding: 12px 14px; font-size: 14px; line-height: 1.5; color: #DCE5F5; }
 .waiver p { margin: 0 0 10px; }
 .waiver:focus { outline: 2px solid var(--red); }
+
+.sample-note { background: rgba(251,191,36,0.14); border: 1px solid rgba(251,191,36,0.5); color: #FDE68A; border-radius: 12px; padding: 10px 12px; font-size: 14px; font-weight: 600; margin: 0 0 12px; }

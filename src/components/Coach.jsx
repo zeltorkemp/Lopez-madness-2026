@@ -3,7 +3,8 @@ import { LIVE } from '../config.js'
 import { TESTS, TEST_WEEKS } from '../data/program.js'
 import { logTime, resetDemo } from '../lib/store.js'
 
-export default function Coach({ athletes, onSaved }) {
+export default function Coach({ athletes: all, onSaved }) {
+  const athletes = LIVE ? all.filter(a => !a.sample) : all
   const [athleteId, setAthleteId] = useState('')
   const [testId, setTestId] = useState('dash')
   const [weekIndex, setWeekIndex] = useState(0)
@@ -43,7 +44,7 @@ export default function Coach({ athletes, onSaved }) {
       <div className="card">
         <div className="field"><label htmlFor="ath">Athlete</label>
           <select id="ath" value={athleteId} onChange={e => setAthleteId(e.target.value)}>
-            <option value="">Pick an athlete</option>
+            <option value="">{athletes.length ? 'Pick an athlete' : 'No athletes added yet'}</option>
             {athletes.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
           </select>
         </div>

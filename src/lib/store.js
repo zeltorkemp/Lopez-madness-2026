@@ -1,6 +1,6 @@
 // Data layer. Demo mode keeps everything on this device.
 // Live mode (Supabase env vars set) writes to the database via REST.
-import { LIVE, PROGRAM } from '../config.js'
+import { LIVE, PROGRAM, SHOW_SAMPLE_BOARD } from '../config.js'
 import { DEMO_ATHLETES } from '../data/demo.js'
 
 const URL = import.meta.env.VITE_SUPABASE_URL
@@ -59,7 +59,11 @@ export async function rsvpCount() {
 export async function getAthletes() {
   if (LIVE) {
     const rows = await rest('sws_athlete_results?select=*')
-    return rows.map(r => ({ id: r.id, name: r.display_name, age: r.age, sport: r.sport, results: r.results }))
+    const real = rows.map(r => ({ id: r.id, name: r.display_name, age: r.age, sport: r.sport, results: r.results }))
+    const hasTimes = real.some(a => Object.values(a.results || {}).some(v => (v || []).some(x => x != null)))
+    // Until the first real time is logged, show labeled sample athletes (plus any real roster).
+    if (!hasTimes && SHOW_SAMPLE_BOARD) return [...real, ...DEMO_ATHLETES.map(a => ({ ...a, sample: true }))]
+    return real
   }
   const logged = local.get('sws_logged', {})
   return DEMO_ATHLETES.map(a => {
