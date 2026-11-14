@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { WEEKS, SESSION, DRILLS } from '../data/program.js'
 
-const COLORS = ['#16356E', '#1E4A94', '#C62828', '#E53935', '#0F2A5A']
+const COLORS = ['#16356E', '#2B5BB8', '#1E4A94', '#C62828', '#E53935', '#0F2A5A']
 
 export default function Plan() {
   const [sel, setSel] = useState(1)
@@ -33,11 +33,23 @@ export default function Plan() {
               </div>
             ))}
           </div>
+          {week.home.length > 0 && (
+            <div style={{ marginTop: 14, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12, padding: '12px 14px' }}>
+              <span className="tag">At-home challenge · 10 min</span>
+              {week.home.map(id => (
+                <div className="drill" key={id}>
+                  <b>{DRILLS[id].name}</b>
+                  <p>{DRILLS[id].cue}</p>
+                  <div className="reps">{DRILLS[id].reps}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       <section className="section">
-        <h2>Every Sunday<small>60 minutes. Short reps, full rest. Speed is trained fresh.</small></h2>
+        <h2>Every Sunday<small>60 minutes. Short reps, full rest. Speed is trained fresh. Every session includes jumps, a top-speed dose and races.</small></h2>
         <div className="timeline" aria-hidden="true">
           {SESSION.map((s, i) => <div key={s.name} style={{ flex: s.min, background: COLORS[i] }}>{s.min}′</div>)}
         </div>

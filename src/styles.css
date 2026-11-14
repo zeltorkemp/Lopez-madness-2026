@@ -74,6 +74,7 @@ h1, h2, h3, .display { font-family: 'Oswald', sans-serif; text-transform: upperc
 .info-list div:last-child { border-bottom: 0; }
 .info-list dt { color: var(--muted); font-weight: 700; }
 .info-list dd { margin: 0; text-align: right; font-weight: 600; }
+.info-list dd.mono { white-space: nowrap; }
 
 .meter { height: 12px; border-radius: 999px; background: rgba(255,255,255,0.1); overflow: hidden; }
 .meter > i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--red), #FF7043); transition: width 1s ease; }
