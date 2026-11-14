@@ -33,7 +33,14 @@ export default function App() {
   }, [])
 
   const go = id => { window.location.hash = id }
-  const openAthlete = a => setOpen(a)
+  // Speed Card opens as its own history entry so the phone's Back button/swipe closes it
+  const openAthlete = a => { window.history.pushState({ card: true }, ''); setOpen(a) }
+  const closeCard = useCallback(() => { if (window.history.state?.card) window.history.back(); else setOpen(null) }, [])
+  useEffect(() => {
+    const onPop = () => setOpen(null)
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
 
   return (
     <div className="app">
@@ -71,7 +78,7 @@ export default function App() {
         ))}
       </nav>
 
-      {open && <SpeedCard athlete={open} athletes={athletes} onClose={() => setOpen(null)} />}
+      {open && <SpeedCard athlete={open} athletes={athletes} onClose={closeCard} />}
     </div>
   )
 }

@@ -120,7 +120,10 @@ h1, h2, h3, .display { font-family: 'Archivo Black', 'Inter', sans-serif; font-w
 
 /* Speed card sheet */
 .overlay { position: fixed; inset: 0; z-index: 50; background: rgba(2,4,8,0.8); display: flex; align-items: flex-end; justify-content: center; }
-.sheet { width: 100%; max-width: 640px; max-height: 92vh; overflow-y: auto; background: var(--bg); border-top: 3px solid var(--red); padding: 22px 20px 32px; animation: up .25s ease; }
+.sheet { width: 100%; max-width: 640px; max-height: 94vh; overflow-y: auto; overscroll-behavior: contain; background: var(--bg); border-top: 3px solid var(--red); padding: 0 20px calc(28px + env(safe-area-inset-bottom)); animation: up .25s ease; }
+.sheet-bar { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 -20px 14px; padding: 8px 12px; background: rgba(5,8,15,0.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.sheet-back { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 8px; background: none; border: 0; font-weight: 700; font-size: 16px; cursor: pointer; }
+.sheet-title { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--red); }
 @keyframes up { from { transform: translateY(40px); opacity: 0 } to { transform: none; opacity: 1 } }
 @media (min-width: 700px) { .overlay { align-items: center; } .sheet { border: 1px solid var(--line); border-top: 3px solid var(--red); } }
 .sheet-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
@@ -187,3 +190,12 @@ input[type=range] { width: 100%; accent-color: var(--red); min-height: 44px; }
 .footer p { margin: 4px 0; }
 .coach-link { display: inline-block; margin-top: 8px; padding: 12px; color: var(--muted); }
 .btn-row > .btn { flex: 1 1 220px; }
+
+/* Feature tiles */
+.features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 14px; }
+.feature { position: relative; display: flex; flex-direction: column; gap: 6px; min-height: 132px; padding: 16px 14px 14px; background: var(--panel); border: 1px solid var(--line); border-top: 3px solid var(--red); text-align: left; text-decoration: none; cursor: pointer; }
+.feature:hover, .feature:focus-visible { border-color: #3A4560; border-top-color: var(--red); background: var(--panel-2); }
+.feature svg { color: var(--red); }
+.feature b { font-size: 16px; }
+.feature span { font-size: 13px; line-height: 1.4; color: var(--muted); }
+.feature em { margin-top: auto; font-style: normal; font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }

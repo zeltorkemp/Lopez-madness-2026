@@ -58,6 +58,29 @@ export default function Home({ go, athletes, openAthlete }) {
       </section>
 
       <section className="section">
+        <h2>Inside the clinic</h2>
+        <p className="sub">Tap any of these to try it now.</p>
+        <div className="features">
+          <button className="feature" onClick={() => ranked[0] && openAthlete(ranked[0])}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1" /><path d="M7 15l3-3 3 2 4-5" /></svg>
+            <b>Your Speed Card</b><span>Every time, every week, charted.</span><em>See a sample →</em>
+          </button>
+          <button className="feature" onClick={() => go('board')}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 20V10M12 20V4M18 20v-6" /></svg>
+            <b>Speed Board</b><span>Ranked by improvement, not raw speed.</span><em>View board →</em>
+          </button>
+          <button className="feature" onClick={() => go('lab')}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l2 2M9 2h6" /></svg>
+            <b>Speed Lab</b><span>Test your reaction time like a race start.</span><em>Play now →</em>
+          </button>
+          <button className="feature" onClick={() => go('plan')}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" /></svg>
+            <b>10-Week Plan</b><span>Drills, focus and at-home challenges.</span><em>See week 1 →</em>
+          </button>
+        </div>
+      </section>
+
+      <section className="section">
         <h2>How it works</h2>
         <ol className="steps">
           <li><span className="num">01</span><div><b>Get timed</b><p>Week 1: 20-yard dash, 5-10-5 shuttle and broad jump.</p></div></li>

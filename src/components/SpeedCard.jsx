@@ -17,14 +17,20 @@ export default function SpeedCard({ athlete, onClose }) {
   return (
     <div className="overlay" onClick={onClose}>
       <div className="sheet" role="dialog" aria-modal="true" aria-label={`${athlete.name} Speed Card`} onClick={e => e.stopPropagation()}>
+        <div className="sheet-bar">
+          <button className="sheet-back" onClick={onClose} aria-label="Back">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+            Back
+          </button>
+          <span className="sheet-title">Speed Card</span>
+          <button className="close" onClick={onClose} aria-label="Close Speed Card">×</button>
+        </div>
         <div className="sheet-head">
           <div>
-            <p className="small" style={{ margin: 0, fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--red)' }}>Speed Card</p>
-            <h2 style={{ fontSize: 36 }}>{athlete.name}</h2>
+            <h2 style={{ fontSize: 34 }}>{athlete.name}</h2>
             <p className="small" style={{ margin: '2px 0 0' }}>Age {athlete.age} · {athlete.sport}</p>
             {athlete.sample && <p className="sample-note" style={{ margin: '10px 0 0' }}>Sample athlete for preview</p>}
           </div>
-          <button className="close" onClick={onClose} aria-label="Close Speed Card">×</button>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, margin: '18px 0' }}>
@@ -47,7 +53,7 @@ export default function SpeedCard({ athlete, onClose }) {
                 <div style={{ height: 90, marginTop: 6 }} aria-hidden="true">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={data} margin={{ top: 10, right: 22, left: 22, bottom: 0 }}>
-                      <XAxis dataKey="week" interval={0} padding={{ left: 4, right: 4 }} tick={{ fill: '#A9B8D6', fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <XAxis dataKey="week" interval={0} padding={{ left: 4, right: 4 }} tick={{ fill: '#8E9AB2', fontSize: 11 }} axisLine={false} tickLine={false} />
                       <YAxis hide reversed={t.lowerIsBetter} domain={['dataMin', 'dataMax']} />
                       <Tooltip formatter={v => [fmt(t.id, v), 'Result']} contentStyle={{ background: '#0A0F1A', border: '1px solid #1E2738', borderRadius: 0 }} labelStyle={{ color: '#fff' }} />
                       <Line type="monotone" dataKey="v" stroke="#FF3B30" strokeWidth={3} dot={{ r: 5, fill: '#fff', stroke: '#FF3B30', strokeWidth: 2 }} connectNulls isAnimationActive={false} />
@@ -61,6 +67,7 @@ export default function SpeedCard({ athlete, onClose }) {
             )
           })}
         </div>
+        <button className="btn btn-ghost btn-block" onClick={onClose}>Done</button>
       </div>
     </div>
   )
