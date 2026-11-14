@@ -74,7 +74,7 @@ export default function Coach({ athletes: all, onSaved }) {
           <>
             <div className="stopwatch" aria-live="off">{elapsed.toFixed(2)}</div>
             <button className={`btn huge ${running ? 'btn-ghost' : 'btn-red'}`} onClick={toggle}>{btnLabel}</button>
-            {isForty && <p className="small" style={{ margin: '8px 0 0', textAlign: 'center' }}>Stand even with the 20-yard cone. Tap SPLIT as they pass it, STOP at 40.</p>}
+            {isForty && <p className="small" style={{ margin: '8px 0 0', textAlign: 'center' }}>Stand off to the side where you can see the 20 and 40 cones. Tap SPLIT at 20, STOP at 40. With a helper, have them time the 20 and type it below.</p>}
           </>
         )}
 
