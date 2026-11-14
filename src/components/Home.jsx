@@ -69,9 +69,9 @@ export default function Home({ go, athletes, openAthlete }) {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 20V10M12 20V4M18 20v-6" /></svg>
             <b>Speed Board</b><span>Ranked by improvement, not raw speed.</span><em>View board →</em>
           </button>
-          <button className="feature" onClick={() => go('lab')}>
+          <button className="feature" onClick={() => go('tools')}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l2 2M9 2h6" /></svg>
-            <b>Speed Lab</b><span>Test your reaction time like a race start.</span><em>Play now →</em>
+            <b>Speed Tools</b><span>Home sprint timer and a Week 10 goal calculator.</span><em>Try it →</em>
           </button>
           <button className="feature" onClick={() => go('plan')}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" /></svg>

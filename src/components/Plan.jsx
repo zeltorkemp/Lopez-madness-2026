@@ -43,6 +43,7 @@ export default function Plan() {
                   <div className="reps">{DRILLS[id].reps}</div>
                 </div>
               ))}
+              <a className="btn btn-ghost btn-block" href="#tools" style={{ marginTop: 6 }}>Bonus: time 3 practice sprints</a>
             </div>
           )}
         </div>

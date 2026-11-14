@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import { LIVE, PROGRAM } from './config.js'
 import { getAthletes } from './lib/store.js'
 import Home from './components/Home.jsx'
-import Lab from './components/Lab.jsx'
+import Tools from './components/Tools.jsx'
 import Board from './components/Board.jsx'
 import Plan from './components/Plan.jsx'
 import Join from './components/Join.jsx'
@@ -12,7 +12,7 @@ import SpeedCard from './components/SpeedCard.jsx'
 const TABS = [
   { id: 'home', label: 'Home', icon: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z' },
   { id: 'board', label: 'Speed Board', icon: 'M5 20V10M12 20V4M19 20v-7' },
-  { id: 'lab', label: 'Speed Lab', icon: 'M12 8v5l3 2M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM9 2h6' },
+  { id: 'tools', label: 'Tools', icon: 'M12 8v5l3 2M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM9 2h6' },
   { id: 'plan', label: 'Plan', icon: 'M4 6h16M4 12h16M4 18h10' },
   { id: 'join', label: 'Join', icon: 'M12 5v14M5 12h14' },
 ]
@@ -58,7 +58,7 @@ export default function App() {
       <main className="main">
         {tab === 'home' && <Home go={go} athletes={athletes} openAthlete={openAthlete} />}
         {tab === 'board' && <Board athletes={athletes} openAthlete={openAthlete} />}
-        {tab === 'lab' && <Lab />}
+        {(tab === 'lab' || tab === 'tools') && <Tools />}
         {tab === 'plan' && <Plan />}
         {tab === 'join' && <Join />}
         {tab === 'coach' && <Coach athletes={athletes} onSaved={refresh} />}

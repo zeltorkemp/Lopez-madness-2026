@@ -35,3 +35,11 @@ export const FUND = {
 
 // Demo mode: on until Supabase env vars are set in Vercel.
 export const LIVE = Boolean(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY)
+
+// Goal calculator bands (fraction improvement from Week 1 to Week 10).
+// Conservative starting values. Recalibrate after Week 5 with real athlete results.
+export const GOAL_BANDS = {
+  dash:    { low: 0.03, high: 0.06, stretch: 0.08 },
+  shuttle: { low: 0.03, high: 0.06, stretch: 0.08 },
+  jump:    { low: 0.04, high: 0.08, stretch: 0.12 },
+}
