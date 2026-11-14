@@ -16,13 +16,14 @@ export const PROGRAM = {
 }
 
 export const FUND = {
-  goal: 600, // demo goal, update when real
+  goal: 660, // sum of the items below (prices checked Nov 2026)
   raised: 0, // update as donations come in
   items: [
-    { name: 'Laser timing gates', note: 'Accurate times, no stopwatch guessing', est: 'Goal item' },
-    { name: 'Resistance parachutes', note: 'Acceleration strength', est: '' },
-    { name: 'Speed ladders + cones', note: 'Footwork and agility', est: '' },
-    { name: 'Guest coaches', note: 'Track and college athletes', est: '' },
+    { name: 'Laser timing gates', cost: 529, note: 'Exact times to 0.001s instead of stopwatch guesses. Shows the time right on the gate.' },
+    { name: '4 speed parachutes', cost: 52, note: 'Resistance for acceleration days, about $13 each.' },
+    { name: '2 agility ladder + cone kits', cost: 40, note: 'Two stations so kids are not standing in line.' },
+    { name: 'Mini hurdles + bands kit', cost: 39, note: 'Footwork, knee drive and partner-resisted starts.' },
+    { name: 'Guest coaches', cost: null, note: 'Stretch goal: track and college athletes for a session.' },
   ],
 }
 

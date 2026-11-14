@@ -66,8 +66,13 @@ export default function Join() {
       <section className="section card">
         <h2 style={{ fontSize: 24 }}>Want to help?</h2>
         <p style={{ color: '#CBD6EA', lineHeight: 1.5, margin: '6px 0 12px' }}>The clinic is free. 100% of donations go to equipment, and every purchase is posted on the site.</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, margin: '4px 0 8px' }}><span className="mono">${FUND.raised} raised</span><span className="small">goal ${FUND.goal}</span></div>
+        <div className="meter" style={{ marginBottom: 8 }}><i style={{ width: `${Math.min(100, (FUND.raised / FUND.goal) * 100)}%` }} /></div>
         {FUND.items.map(i => (
-          <div className="drill" key={i.name}><b>{i.name}</b><p>{i.note}</p></div>
+          <div className="drill" key={i.name}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}><b>{i.name}</b><span className="mono" style={{ fontWeight: 700 }}>{i.cost ? `$${i.cost}` : 'Stretch'}</span></div>
+            <p>{i.note}</p>
+          </div>
         ))}
         <div className="test-tile" style={{ marginTop: 12, textAlign: 'center' }}>
           <span className="small">Cash App</span>
