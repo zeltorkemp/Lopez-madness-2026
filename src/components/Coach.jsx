@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { LIVE } from '../config.js'
 import { TESTS, TEST_WEEKS } from '../data/program.js'
-import { logTime, resetDemo, timePrefCounts } from '../lib/store.js'
+import { logTime, resetDemo, timePrefCounts, emailList } from '../lib/store.js'
 
 export default function Coach({ athletes: all, onSaved }) {
   const athletes = LIVE ? all.filter(a => !a.sample) : all
@@ -16,6 +16,18 @@ export default function Coach({ athletes: all, onSaved }) {
   const [msg, setMsg] = useState('')
   const [prefs, setPrefs] = useState(null)
   useEffect(() => { timePrefCounts().then(setPrefs).catch(() => setPrefs(null)) }, [])
+  const [emails, setEmails] = useState(null)
+  const [emailMsg, setEmailMsg] = useState('')
+  const loadEmails = async () => {
+    try {
+      const rows = await emailList(pin)
+      setEmails(rows); setEmailMsg('')
+    } catch { setEmailMsg(LIVE ? 'Enter the coach PIN in the timing card above first.' : 'Could not load emails.') }
+  }
+  const copy = async list => {
+    const text = [...new Set(list.filter(r => r.email).map(r => r.email))].join(', ')
+    try { await navigator.clipboard.writeText(text); setEmailMsg(`Copied ${text ? text.split(', ').length : 0} emails. Paste into BCC.`) } catch { setEmailMsg(text) }
+  }
   const startAt = useRef(0)
   const raf = useRef(0)
 
@@ -54,9 +66,9 @@ export default function Coach({ athletes: all, onSaved }) {
     {prefs && (
       <section className="section">
         <h2>Sunday time vote<small>From every sign-up so far, including the waitlist.</small></h2>
-        <div className="tool-stats" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
-          {[['morning', 'Morning'], ['afternoon', 'Afternoon'], ['evening', 'Evening'], ['any', 'Any']].map(([k, l]) => (
-            <div key={k}><span>{l}</span><b className={k === 'any' ? '' : 'gold'}>{prefs[k] ?? 0}</b></div>
+        <div className="tool-stats" >
+          {[['morning', 'Morning'], ['afternoon', 'Afternoon'], ['evening', 'Evening']].map(([k, l]) => (
+            <div key={k}><span>{l}</span><b className="gold">{prefs[k] ?? 0}</b></div>
           ))}
         </div>
       </section>
@@ -104,6 +116,21 @@ export default function Coach({ athletes: all, onSaved }) {
         {LIVE && <div className="field"><label htmlFor="pin">Coach PIN</label><input id="pin" type="password" value={pin} onChange={e => setPin(e.target.value)} /></div>}
         <button className="btn btn-red" style={{ width: '100%' }} onClick={save}>Save result</button>
         {msg && <p role="status" style={{ marginBottom: 0 }}>{msg}</p>}
+      </div>
+      <div className="card" style={{ marginTop: 16 }}>
+        <h3 style={{ fontSize: 18 }}>Parent email list</h3>
+        <p className="small" style={{ margin: '4px 0 12px' }}>Uses the coach PIN above. Paste into BCC from info@speedworksundays.com.</p>
+        {!emails ? <button className="btn btn-ghost" style={{ width: '100%' }} onClick={loadEmails}>Load email list</button> : (
+          <>
+            <p style={{ margin: '0 0 10px' }}>{emails.filter(r => r.email).length} of {emails.length} sign-ups have an email.</p>
+            <div className="btn-row" style={{ marginTop: 0 }}>
+              <button className="btn btn-red" onClick={() => copy(emails)}>Copy all</button>
+              <button className="btn btn-ghost" onClick={() => copy(emails.filter(r => r.status === 'confirmed'))}>Confirmed only</button>
+              <button className="btn btn-ghost" onClick={() => copy(emails.filter(r => r.updates_ok))}>Future programs</button>
+            </div>
+          </>
+        )}
+        {emailMsg && <p role="status" className="small" style={{ marginBottom: 0, wordBreak: 'break-word' }}>{emailMsg}</p>}
       </div>
       {!LIVE && <button className="btn btn-ghost" style={{ marginTop: 12 }} onClick={() => { resetDemo(); onSaved(); setMsg('Preview data reset.') }}>Reset preview data</button>}
     </section>

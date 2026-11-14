@@ -3,7 +3,7 @@ import { PROGRAM, FUND, LIVE } from '../config.js'
 import { submitRsvp, rsvpCount } from '../lib/store.js'
 import { WAIVER, WAIVER_VERSION } from '../data/waiver.js'
 
-const EMPTY = { athlete_name: '', age: '', sport: '', parent_name: '', parent_contact: '', emergency_contact: '', signature_name: '', waiver: false, photo_ok: false, updates_ok: true, time_pref: '' }
+const EMPTY = { athlete_name: '', age: '', sport: '', parent_name: '', parent_email: '', parent_phone: '', emergency_contact: '', signature_name: '', waiver: false, photo_ok: false, updates_ok: true, time_pref: '' }
 
 export default function Join() {
   const [f, setF] = useState(EMPTY)
@@ -38,7 +38,7 @@ export default function Join() {
             <h3 style={{ fontSize: 26 }}>{saved?.status === 'waitlist' ? "You're on the waitlist" : "You're in!"}</h3>
             <p style={{ margin: '8px 0 0', lineHeight: 1.5 }}>{saved?.status === 'waitlist'
               ? `${f.athlete_name.split(' ')[0] || 'Your athlete'} is on the waitlist. We'll reach out first if a spot opens or a second session is added.`
-              : `${f.athlete_name.split(' ')[0] || 'Your athlete'} has a spot in ${PROGRAM.name}. We'll send the start date and what to bring.`}{!LIVE && ' (Preview mode: this was saved on this device only.)'}</p>
+              : `${f.athlete_name.split(' ')[0] || 'Your athlete'} has a spot in ${PROGRAM.name}. We'll email the start date, time and what to bring.`}{!LIVE && ' (Preview mode: this was saved on this device only.)'}</p>
             <button className="btn btn-ghost" style={{ marginTop: 14 }} onClick={() => { setF(EMPTY); setStatus('idle') }}>Add another athlete</button>
           </div>
         ) : (
@@ -54,9 +54,10 @@ export default function Join() {
               </div>
             </div>
             <div className="field"><label htmlFor="pn">Parent or guardian name</label><input id="pn" required value={f.parent_name} onChange={set('parent_name')} autoComplete="name" /></div>
-            <div className="field"><label htmlFor="pc">Parent phone or email</label><input id="pc" required value={f.parent_contact} onChange={set('parent_contact')} autoComplete="email" /></div>
+            <div className="field"><label htmlFor="pe">Parent email</label><input id="pe" type="email" required value={f.parent_email} onChange={set('parent_email')} autoComplete="email" inputMode="email" placeholder="you@email.com" /></div>
+            <div className="field"><label htmlFor="pp">Parent cell <span className="small">(optional)</span></label><input id="pp" type="tel" value={f.parent_phone} onChange={set('parent_phone')} autoComplete="tel" inputMode="tel" /></div>
             <fieldset className="field timepick">
-              <legend>Which Sunday time works best for your family?</legend>
+              <legend>Which time of day works best on Sundays?</legend>
               <div className="timepick-grid">
                 {PROGRAM.timeOptions.map(o => (
                   <label key={o.id} className={f.time_pref === o.id ? 'on' : ''}>
@@ -65,7 +66,7 @@ export default function Join() {
                   </label>
                 ))}
               </div>
-              <span className="small">We'll pick the time most families can make and confirm it before Week 1.</span>
+              <span className="small">The final time will be confirmed by email before Week 1.</span>
             </fieldset>
             <div className="field"><label htmlFor="ec">Emergency contact (name and phone, if not you)</label><input id="ec" required value={f.emergency_contact} onChange={set('emergency_contact')} placeholder="Same as above, or another adult" /></div>
             <div className="field">
@@ -77,7 +78,7 @@ export default function Join() {
             <label className="check"><input type="checkbox" required checked={f.waiver} onChange={set('waiver')} /> I'm the parent or legal guardian, I've read the waiver above, and I agree to it for myself and my child.</label>
             <div className="field"><label htmlFor="sig">Type your full name to sign</label><input id="sig" required value={f.signature_name} onChange={set('signature_name')} autoComplete="name" /></div>
             <label className="check"><input type="checkbox" checked={f.photo_ok} onChange={set('photo_ok')} /> OK to show my athlete's first name and last initial on the Speed Board.</label>
-            <label className="check"><input type="checkbox" checked={f.updates_ok} onChange={set('updates_ok')} /> Tell me about extra sessions and future programs.</label>
+            <label className="check"><input type="checkbox" checked={f.updates_ok} onChange={set('updates_ok')} /> Also email me about extra sessions and future programs.</label>
             <button className="btn btn-red" style={{ width: '100%' }} disabled={status === 'sending'}>{status === 'sending' ? 'Saving…' : full ? 'Join the waitlist' : 'Reserve my spot'}</button>
             {status === 'error' && <p role="alert" style={{ color: 'var(--red)' }}>Something went wrong. Please try again.</p>}
           </form>

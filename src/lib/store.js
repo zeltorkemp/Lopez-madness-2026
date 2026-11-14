@@ -32,7 +32,7 @@ export async function submitRsvp(rsvp) {
   if (LIVE) {
     const status = await rest('rpc/sws_signup', { method: 'POST', body: JSON.stringify({
       p_athlete_name: rsvp.athlete_name, p_age: rsvp.age, p_sport: rsvp.sport,
-      p_parent_name: rsvp.parent_name, p_parent_contact: rsvp.parent_contact,
+      p_parent_name: rsvp.parent_name, p_parent_contact: rsvp.parent_phone || '', p_parent_email: rsvp.parent_email,
       p_emergency_contact: rsvp.emergency_contact, p_signature_name: rsvp.signature_name,
       p_waiver: rsvp.waiver, p_waiver_version: rsvp.waiver_version,
       p_photo_ok: rsvp.photo_ok, p_updates_ok: rsvp.updates_ok, p_time_pref: rsvp.time_pref || null,
@@ -62,6 +62,12 @@ export async function timePrefCounts() {
   const c = { morning: 0, afternoon: 0, evening: 0, any: 0 }
   all.forEach(r => { if (c[r.time_pref] != null) c[r.time_pref]++ })
   return c
+}
+
+// Coach-only: parent email list (PIN checked in the database).
+export async function emailList(pin) {
+  if (LIVE) return rest('rpc/sws_email_list', { method: 'POST', body: JSON.stringify({ p_pin: pin }) })
+  return local.get('sws_rsvps', []).map(r => ({ parent_name: r.parent_name, athlete_name: r.athlete_name, email: r.parent_email, status: r.status, updates_ok: r.updates_ok }))
 }
 
 export async function getAthletes() {
