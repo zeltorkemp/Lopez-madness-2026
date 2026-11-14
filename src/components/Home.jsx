@@ -17,7 +17,8 @@ export default function Home({ go, athletes, openAthlete }) {
   const [count, setCount] = useState(null)
   useEffect(() => { rsvpCount().then(setCount).catch(() => setCount(null)) }, [])
   const cd = useCountdown(PROGRAM.startDate)
-  const spotsLeft = count == null ? PROGRAM.cap : Math.max(PROGRAM.cap - count, 0)
+  const spotsLeft = count == null ? PROGRAM.cap : Math.max(PROGRAM.cap - count.confirmed, 0)
+  const full = spotsLeft === 0
   const top = useMemo(() => [...athletes].sort((a, b) => overallImprovement(b) - overallImprovement(a))[0], [athletes])
   const fundPct = Math.min(100, Math.round((FUND.raised / FUND.goal) * 100))
 
@@ -48,17 +49,18 @@ export default function Home({ go, athletes, openAthlete }) {
         )}
 
         <div className="btn-row">
-          <a className="btn btn-red" href="#join">Reserve a spot</a>
+          <a className="btn btn-red" href="#join">{full ? 'Join the waitlist' : 'Reserve a spot'}</a>
           <a className="btn btn-ghost" href="#lab">Test your reaction</a>
         </div>
       </section>
 
       <section className="section card" aria-label="Spots remaining">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
-          <h2 style={{ fontSize: 22, margin: 0 }}>{spotsLeft} of {PROGRAM.cap} spots left</h2>
+          <h2 style={{ fontSize: 22, margin: 0 }}>{full ? 'Full: join the waitlist' : `${spotsLeft} of ${PROGRAM.cap} spots left`}</h2>
           <span className="small">{PROGRAM.startDate ? `Starts ${new Date(`${PROGRAM.startDate}T12:00:00`).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : PROGRAM.startLabel}</span>
         </div>
         <div className="meter"><i style={{ width: `${((PROGRAM.cap - spotsLeft) / PROGRAM.cap) * 100}%` }} /></div>
+        {full && <a className="btn btn-red" href="#join" style={{ width: '100%', marginTop: 14 }}>Join the waitlist</a>}
       </section>
 
       <section className="section">
@@ -86,7 +88,7 @@ export default function Home({ go, athletes, openAthlete }) {
         <h2 style={{ fontSize: 24 }}>The details</h2>
         <dl className="info-list">
           <div><dt>Who</dt><dd>Ages {PROGRAM.ages}, any sport</dd></div>
-          <div><dt>When</dt><dd>Sundays · {PROGRAM.startDate ? PROGRAM.time : PROGRAM.startLabel}</dd></div>
+          <div><dt>When</dt><dd>Sundays, {PROGRAM.time}<br /><span className="small">{PROGRAM.startLabel}</span></dd></div>
           <div><dt>Where</dt><dd><a href={PROGRAM.locationMapUrl} target="_blank" rel="noreferrer">{PROGRAM.location}</a></dd></div>
           <div><dt>Cost</dt><dd>Free</dd></div>
           <div><dt>Bring</dt><dd>Water, sneakers or turf cleats</dd></div>

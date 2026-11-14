@@ -1,6 +1,6 @@
 // Data layer. Demo mode keeps everything on this device.
 // Live mode (Supabase env vars set) writes to the database via REST.
-import { LIVE } from '../config.js'
+import { LIVE, PROGRAM } from '../config.js'
 import { DEMO_ATHLETES } from '../data/demo.js'
 
 const URL = import.meta.env.VITE_SUPABASE_URL
@@ -24,20 +24,33 @@ async function rest(path, options = {}) {
   return res.status === 204 ? null : res.json()
 }
 
+const DEMO_BASELINE = 7 // sample confirmed sign-ups shown in preview mode
+
+// Returns the saved row, including status: 'confirmed' or 'waitlist'.
+// Live mode: the database decides the status (see supabase/schema.sql).
 export async function submitRsvp(rsvp) {
-  if (LIVE) return rest('rsvps', { method: 'POST', body: JSON.stringify(rsvp) })
+  if (LIVE) {
+    const rows = await rest('rsvps', { method: 'POST', body: JSON.stringify(rsvp) })
+    return rows?.[0] ?? rsvp
+  }
   const all = local.get('sws_rsvps', [])
-  all.push({ ...rsvp, created_at: new Date().toISOString() })
+  const confirmed = DEMO_BASELINE + all.filter(r => r.status === 'confirmed').length
+  const row = { ...rsvp, status: confirmed >= PROGRAM.cap ? 'waitlist' : 'confirmed', created_at: new Date().toISOString() }
+  all.push(row)
   local.set('sws_rsvps', all)
-  return rsvp
+  return row
 }
 
 export async function rsvpCount() {
   if (LIVE) {
-    const rows = await rest('rsvp_count?select=count')
-    return rows?.[0]?.count ?? 0
+    const rows = await rest('rsvp_count?select=confirmed,waitlist')
+    return rows?.[0] ?? { confirmed: 0, waitlist: 0 }
   }
-  return 7 + local.get('sws_rsvps', []).length // demo baseline
+  const all = local.get('sws_rsvps', [])
+  return {
+    confirmed: DEMO_BASELINE + all.filter(r => r.status === 'confirmed').length,
+    waitlist: all.filter(r => r.status === 'waitlist').length,
+  }
 }
 
 export async function getAthletes() {

@@ -10,15 +10,34 @@ create table if not exists rsvps (
   sport text,
   parent_name text not null,
   parent_contact text not null,
-  preferred_time text,
   waiver boolean not null default false,
   photo_ok boolean not null default false,
+  updates_ok boolean not null default true,
+  status text not null default 'confirmed' check (status in ('confirmed','waitlist')),
   created_at timestamptz not null default now()
 );
+
+-- Cap: once 20 are confirmed, new sign-ups go to the waitlist automatically.
+-- Change the 20 here if you add a session or raise the cap.
+create or replace function rsvp_set_status() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  perform pg_advisory_xact_lock(424242);
+  if (select count(*) from rsvps where status = 'confirmed') >= 20 then
+    new.status := 'waitlist';
+  else
+    new.status := 'confirmed';
+  end if;
+  return new;
+end $$;
+create trigger rsvps_status before insert on rsvps for each row execute function rsvp_set_status();
 alter table rsvps enable row level security;
 create policy "anyone can sign up" on rsvps for insert to anon with check (waiver = true);
 
-create or replace view rsvp_count as select count(*)::int as count from rsvps;
+create or replace view rsvp_count as
+select count(*) filter (where status = 'confirmed')::int as confirmed,
+       count(*) filter (where status = 'waitlist')::int as waitlist
+from rsvps;
 grant select on rsvp_count to anon;
 
 -- Athletes shown on the site use a display name only (first name + last initial).

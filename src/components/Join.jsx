@@ -1,12 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { PROGRAM, FUND, LIVE } from '../config.js'
-import { submitRsvp } from '../lib/store.js'
+import { submitRsvp, rsvpCount } from '../lib/store.js'
 
-const EMPTY = { athlete_name: '', age: '', sport: '', parent_name: '', parent_contact: '', preferred_time: '', waiver: false, photo_ok: false }
+const EMPTY = { athlete_name: '', age: '', sport: '', parent_name: '', parent_contact: '', waiver: false, photo_ok: false, updates_ok: true }
 
 export default function Join() {
   const [f, setF] = useState(EMPTY)
   const [status, setStatus] = useState('idle') // idle | sending | done | error
+  const [saved, setSaved] = useState(null)
+  const [counts, setCounts] = useState(null)
+  useEffect(() => { rsvpCount().then(setCounts).catch(() => setCounts(null)) }, [status])
+  const full = counts ? counts.confirmed >= PROGRAM.cap : false
   const set = k => e => setF({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value })
 
   const submit = async e => {
@@ -14,7 +18,8 @@ export default function Join() {
     if (!f.waiver) return
     setStatus('sending')
     try {
-      await submitRsvp({ ...f, age: f.age ? Number(f.age) : null })
+      const row = await submitRsvp({ ...f, age: f.age ? Number(f.age) : null })
+      setSaved(row)
       setStatus('done')
     } catch {
       setStatus('error')
@@ -24,11 +29,15 @@ export default function Join() {
   return (
     <>
       <section className="section">
-        <h2>Reserve a spot<small>Free. {PROGRAM.cap} athletes max so every kid gets coached.</small></h2>
+        <h2>{full ? 'Join the waitlist' : 'Reserve a spot'}<small>{full
+          ? `All ${PROGRAM.cap} spots are taken${counts?.waitlist ? ` and ${counts.waitlist} ${counts.waitlist === 1 ? 'family is' : 'families are'} waiting` : ''}. Join the waitlist: you're first in line if a spot opens or we add a second session.`
+          : `Free. ${PROGRAM.cap} athletes max so every kid gets coached. Sundays, ${PROGRAM.time}. ${PROGRAM.startLabel}.`}</small></h2>
         {status === 'done' ? (
           <div className="success" role="status">
-            <h3 style={{ fontSize: 26 }}>You're on the list!</h3>
-            <p style={{ margin: '8px 0 0', lineHeight: 1.5 }}>{f.athlete_name.split(' ')[0] || 'Your athlete'} is reserved for {PROGRAM.name}. We'll send the start date and what to bring.{!LIVE && ' (Preview mode: sign-ups open soon, this one was saved on this device only.)'}</p>
+            <h3 style={{ fontSize: 26 }}>{saved?.status === 'waitlist' ? "You're on the waitlist" : "You're in!"}</h3>
+            <p style={{ margin: '8px 0 0', lineHeight: 1.5 }}>{saved?.status === 'waitlist'
+              ? `${f.athlete_name.split(' ')[0] || 'Your athlete'} is on the waitlist. We'll reach out first if a spot opens or a second session is added.`
+              : `${f.athlete_name.split(' ')[0] || 'Your athlete'} has a spot in ${PROGRAM.name}. We'll send the start date and what to bring.`}{!LIVE && ' (Preview mode: this was saved on this device only.)'}</p>
             <button className="btn btn-ghost" style={{ marginTop: 14 }} onClick={() => { setF(EMPTY); setStatus('idle') }}>Add another athlete</button>
           </div>
         ) : (
@@ -45,18 +54,10 @@ export default function Join() {
             </div>
             <div className="field"><label htmlFor="pn">Parent or guardian name</label><input id="pn" required value={f.parent_name} onChange={set('parent_name')} autoComplete="name" /></div>
             <div className="field"><label htmlFor="pc">Parent phone or email</label><input id="pc" required value={f.parent_contact} onChange={set('parent_contact')} autoComplete="email" /></div>
-            <div className="field"><label htmlFor="pt">Best Sunday time for your family</label>
-              <select id="pt" value={f.preferred_time} onChange={set('preferred_time')}>
-                <option value="">No preference</option>
-                <option>Morning (9 to 11 AM)</option>
-                <option>Midday (11 AM to 1 PM)</option>
-                <option>Afternoon (1 to 4 PM)</option>
-              </select>
-            </div>
-            <p className="small" style={{ marginTop: -4 }}>{PROGRAM.startLabel}. We pick the start date and time based on sign-ups.</p>
             <label className="check"><input type="checkbox" required checked={f.waiver} onChange={set('waiver')} /> I'm the parent or guardian and I agree to the participation waiver.</label>
             <label className="check"><input type="checkbox" checked={f.photo_ok} onChange={set('photo_ok')} /> OK to show my athlete's first name and last initial on the Speed Board.</label>
-            <button className="btn btn-red" style={{ width: '100%' }} disabled={status === 'sending'}>{status === 'sending' ? 'Saving…' : 'Reserve my spot'}</button>
+            <label className="check"><input type="checkbox" checked={f.updates_ok} onChange={set('updates_ok')} /> Tell me about extra sessions and future programs.</label>
+            <button className="btn btn-red" style={{ width: '100%' }} disabled={status === 'sending'}>{status === 'sending' ? 'Saving…' : full ? 'Join the waitlist' : 'Reserve my spot'}</button>
             {status === 'error' && <p role="alert" style={{ color: '#FF8A80' }}>Something went wrong. Please try again.</p>}
           </form>
         )}

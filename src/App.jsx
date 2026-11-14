@@ -45,7 +45,7 @@ export default function App() {
           <svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#E53935"/><path d="M36 12l-7 23h10l-4 17 16-25H41l6-15z" fill="#fff"/></svg>
           <span>Speed Work <em>Sundays</em></span>
         </button>
-        <a className="top-cta" href="#join">Reserve a spot</a>
+        <a className="top-cta" href="#join">Sign up</a>
       </header>
 
       <main className="main">
