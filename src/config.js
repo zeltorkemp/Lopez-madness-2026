@@ -17,7 +17,7 @@ export const PROGRAM = {
 
 export const FUND = {
   goal: 600, // demo goal, update when real
-  raised: 185, // demo figure
+  raised: 0, // update as donations come in
   items: [
     { name: 'Laser timing gates', note: 'Accurate times, no stopwatch guessing', est: 'Goal item' },
     { name: 'Resistance parachutes', note: 'Acceleration strength', est: '' },

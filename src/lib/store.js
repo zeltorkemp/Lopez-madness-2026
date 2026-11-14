@@ -27,11 +27,15 @@ async function rest(path, options = {}) {
 const DEMO_BASELINE = 3 // reserved spots (Kai, Kannon, one more); live mode seeds these in the database
 
 // Returns the saved row, including status: 'confirmed' or 'waitlist'.
-// Live mode: the database decides the status (see supabase/schema.sql).
+// Live mode: the database decides the status (sws_signup in supabase/schema.sql).
 export async function submitRsvp(rsvp) {
   if (LIVE) {
-    const rows = await rest('rsvps', { method: 'POST', body: JSON.stringify(rsvp) })
-    return rows?.[0] ?? rsvp
+    const status = await rest('rpc/sws_signup', { method: 'POST', body: JSON.stringify({
+      p_athlete_name: rsvp.athlete_name, p_age: rsvp.age, p_sport: rsvp.sport,
+      p_parent_name: rsvp.parent_name, p_parent_contact: rsvp.parent_contact,
+      p_waiver: rsvp.waiver, p_photo_ok: rsvp.photo_ok, p_updates_ok: rsvp.updates_ok,
+    }) })
+    return { ...rsvp, status }
   }
   const all = local.get('sws_rsvps', [])
   const confirmed = DEMO_BASELINE + all.filter(r => r.status === 'confirmed').length
@@ -42,10 +46,7 @@ export async function submitRsvp(rsvp) {
 }
 
 export async function rsvpCount() {
-  if (LIVE) {
-    const rows = await rest('rsvp_count?select=confirmed,waitlist')
-    return rows?.[0] ?? { confirmed: 0, waitlist: 0 }
-  }
+  if (LIVE) return rest('rpc/sws_rsvp_counts', { method: 'POST', body: '{}' })
   const all = local.get('sws_rsvps', [])
   return {
     confirmed: DEMO_BASELINE + all.filter(r => r.status === 'confirmed').length,
@@ -55,7 +56,7 @@ export async function rsvpCount() {
 
 export async function getAthletes() {
   if (LIVE) {
-    const rows = await rest('athlete_results?select=*')
+    const rows = await rest('sws_athlete_results?select=*')
     return rows.map(r => ({ id: r.id, name: r.display_name, age: r.age, sport: r.sport, results: r.results }))
   }
   const logged = local.get('sws_logged', {})
@@ -74,7 +75,7 @@ export async function getAthletes() {
 // weekIndex: 0 = week 1, 1 = week 5, 2 = week 10
 export async function logTime({ athleteId, testId, weekIndex, value, pin }) {
   if (LIVE) {
-    return rest('rpc/log_result', { method: 'POST', body: JSON.stringify({ p_athlete: athleteId, p_test: testId, p_week_index: weekIndex, p_value: value, p_pin: pin }) })
+    return rest('rpc/sws_log_result', { method: 'POST', body: JSON.stringify({ p_athlete: athleteId, p_test: testId, p_week_index: weekIndex, p_value: value, p_pin: pin }) })
   }
   const logged = local.get('sws_logged', {})
   logged[athleteId] = logged[athleteId] || {}
