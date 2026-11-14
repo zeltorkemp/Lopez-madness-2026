@@ -128,3 +128,9 @@ alter table sws_results add constraint sws_results_test_check check (test in ('f
 -- Migration "speed_work_sundays_parent_email" (2026-11-14): required parent email (sws_rsvps.parent_email),
 -- parent_contact now holds the optional cell. sws_signup gains p_parent_email (default null).
 -- sws_email_list(p_pin) returns the coach-only email list (falls back to emails typed in parent_contact).
+
+-- Migrations "speed_work_sundays_notify" + "_notify_retry" (2026-11-14): sign-up emails.
+-- After insert on sws_rsvps, pg_net calls the sws-notify edge function (supabase/functions/sws-notify),
+-- which emails the parent a confirmation and info@speedworksundays.com an alert via Gmail SMTP
+-- (secrets GMAIL_USER, GMAIL_APP_PASSWORD). notified_at / notify_result record what happened.
+-- pg_cron job 'sws-notify-retry' re-sends anything still unsent every 10 minutes (last 7 days).
