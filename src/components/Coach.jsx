@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { LIVE } from '../config.js'
 import { TESTS, TEST_WEEKS } from '../data/program.js'
-import { logTime, resetDemo } from '../lib/store.js'
+import { logTime, resetDemo, timePrefCounts } from '../lib/store.js'
 
 export default function Coach({ athletes: all, onSaved }) {
   const athletes = LIVE ? all.filter(a => !a.sample) : all
@@ -14,6 +14,8 @@ export default function Coach({ athletes: all, onSaved }) {
   const [manual, setManual] = useState('')
   const [pin, setPin] = useState('')
   const [msg, setMsg] = useState('')
+  const [prefs, setPrefs] = useState(null)
+  useEffect(() => { timePrefCounts().then(setPrefs).catch(() => setPrefs(null)) }, [])
   const startAt = useRef(0)
   const raf = useRef(0)
 
@@ -48,6 +50,17 @@ export default function Coach({ athletes: all, onSaved }) {
   }
 
   return (
+    <>
+    {prefs && (
+      <section className="section">
+        <h2>Sunday time vote<small>From every sign-up so far, including the waitlist.</small></h2>
+        <div className="tool-stats" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+          {[['morning', 'Morning'], ['afternoon', 'Afternoon'], ['evening', 'Evening'], ['any', 'Any']].map(([k, l]) => (
+            <div key={k}><span>{l}</span><b className={k === 'any' ? '' : 'gold'}>{prefs[k] ?? 0}</b></div>
+          ))}
+        </div>
+      </section>
+    )}
     <section className="section">
       <h2>Coach Timing<small>{LIVE ? 'Log results at the track. Saves straight to the Speed Board.' : 'Preview mode: results save on this device so you can try it.'}</small></h2>
       <div className="card">
@@ -94,5 +107,6 @@ export default function Coach({ athletes: all, onSaved }) {
       </div>
       {!LIVE && <button className="btn btn-ghost" style={{ marginTop: 12 }} onClick={() => { resetDemo(); onSaved(); setMsg('Preview data reset.') }}>Reset preview data</button>}
     </section>
+    </>
   )
 }

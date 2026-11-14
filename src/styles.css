@@ -219,3 +219,14 @@ input[type=range] { width: 100%; accent-color: var(--red); min-height: 44px; }
 .linkish { background: none; border: 0; padding: 0; color: var(--muted); text-decoration: underline; cursor: pointer; font-size: 13px; }
 .section > .eyebrow { margin-bottom: 4px; }
 .toggle button:disabled { opacity: .5; }
+
+/* Sign-up time vote */
+.timepick { border: 0; padding: 0; margin: 0 0 14px; }
+.timepick legend { font-size: 14px; font-weight: 600; color: var(--soft); margin-bottom: 8px; padding: 0; }
+.timepick-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 6px; }
+.timepick-grid label { display: flex; flex-direction: column; justify-content: center; min-height: 58px; padding: 10px 12px; border: 1px solid #2A3449; border-radius: 10px; cursor: pointer; position: relative; }
+.timepick-grid label.on { border-color: var(--red); background: rgba(255,59,48,0.08); }
+.timepick-grid input { position: absolute; opacity: 0; pointer-events: none; }
+.timepick-grid label:focus-within { outline: 2px solid var(--red); outline-offset: 1px; }
+.timepick-grid b { font-size: 15px; }
+.timepick-grid span { font-size: 12px; color: var(--muted); }

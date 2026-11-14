@@ -120,3 +120,7 @@ alter table sws_rsvps
 alter table sws_results drop constraint if exists sws_results_test_check;
 alter table sws_results add constraint sws_results_test_check check (test in ('forty','dash','shuttle','jump'));
 -- sws_athlete_results view recreated with a 'forty' key (same pattern as the others).
+
+-- Migration "speed_work_sundays_time_pref" (2026-11-14): families vote on the Sunday time at sign-up.
+-- sws_rsvps.time_pref in ('morning','afternoon','evening','any'); sws_signup takes p_time_pref (default null,
+-- so older clients still work); sws_time_pref_counts() returns vote totals for the coach page.

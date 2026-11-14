@@ -5,7 +5,14 @@ export const PROGRAM = {
   ages: '8–14',
   location: 'Buffaloe Road Athletic Park track',
   locationMapUrl: 'https://maps.google.com/?q=Buffaloe+Road+Athletic+Park+Raleigh+NC',
-  time: '9:00–10:00 AM',
+  time: 'about 1 hour',
+  timeNote: 'Time picked by family vote at sign-up',
+  timeOptions: [
+    { id: 'morning', label: 'Morning', hint: 'around 9 AM' },
+    { id: 'afternoon', label: 'Afternoon', hint: 'around 2 PM' },
+    { id: 'evening', label: 'Evening', hint: 'around 5 PM' },
+    { id: 'any', label: 'Any time works' },
+  ],
   startDate: null, // e.g. '2027-01-10' (first Sunday). When set, the homepage shows a live countdown.
   startLabel: 'Starting January 2027', // shown until startDate is set
   weeks: 10,

@@ -35,7 +35,7 @@ export async function submitRsvp(rsvp) {
       p_parent_name: rsvp.parent_name, p_parent_contact: rsvp.parent_contact,
       p_emergency_contact: rsvp.emergency_contact, p_signature_name: rsvp.signature_name,
       p_waiver: rsvp.waiver, p_waiver_version: rsvp.waiver_version,
-      p_photo_ok: rsvp.photo_ok, p_updates_ok: rsvp.updates_ok,
+      p_photo_ok: rsvp.photo_ok, p_updates_ok: rsvp.updates_ok, p_time_pref: rsvp.time_pref || null,
     }) })
     return { ...rsvp, status }
   }
@@ -54,6 +54,14 @@ export async function rsvpCount() {
     confirmed: DEMO_BASELINE + all.filter(r => r.status === 'confirmed').length,
     waitlist: all.filter(r => r.status === 'waitlist').length,
   }
+}
+
+export async function timePrefCounts() {
+  if (LIVE) return rest('rpc/sws_time_pref_counts', { method: 'POST', body: '{}' })
+  const all = local.get('sws_rsvps', [])
+  const c = { morning: 0, afternoon: 0, evening: 0, any: 0 }
+  all.forEach(r => { if (c[r.time_pref] != null) c[r.time_pref]++ })
+  return c
 }
 
 export async function getAthletes() {

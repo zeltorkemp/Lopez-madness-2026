@@ -3,7 +3,7 @@ import { PROGRAM, FUND, LIVE } from '../config.js'
 import { submitRsvp, rsvpCount } from '../lib/store.js'
 import { WAIVER, WAIVER_VERSION } from '../data/waiver.js'
 
-const EMPTY = { athlete_name: '', age: '', sport: '', parent_name: '', parent_contact: '', emergency_contact: '', signature_name: '', waiver: false, photo_ok: false, updates_ok: true }
+const EMPTY = { athlete_name: '', age: '', sport: '', parent_name: '', parent_contact: '', emergency_contact: '', signature_name: '', waiver: false, photo_ok: false, updates_ok: true, time_pref: '' }
 
 export default function Join() {
   const [f, setF] = useState(EMPTY)
@@ -16,7 +16,7 @@ export default function Join() {
 
   const submit = async e => {
     e.preventDefault()
-    if (!f.waiver) return
+    if (!f.waiver || !f.time_pref) return
     setStatus('sending')
     try {
       const row = await submitRsvp({ ...f, age: f.age ? Number(f.age) : null, waiver_version: WAIVER_VERSION })
@@ -32,7 +32,7 @@ export default function Join() {
       <section className="section">
         <h2>{full ? 'Join the waitlist' : 'Reserve a spot'}<small>{full
           ? `All ${PROGRAM.cap} spots are taken${counts?.waitlist ? ` and ${counts.waitlist} ${counts.waitlist === 1 ? 'family is' : 'families are'} waiting` : ''}. Join the waitlist: you're first in line if a spot opens or we add a second session.`
-          : `Free. ${PROGRAM.cap} athletes max so every kid gets coached. Sundays, ${PROGRAM.time}. ${PROGRAM.startLabel}.`}</small></h2>
+          : `Free. ${PROGRAM.cap} athletes max so every kid gets coached. Sundays, ${PROGRAM.startLabel.toLowerCase()}. Pick the Sunday time that works for your family below.`}</small></h2>
         {status === 'done' ? (
           <div className="success" role="status">
             <h3 style={{ fontSize: 26 }}>{saved?.status === 'waitlist' ? "You're on the waitlist" : "You're in!"}</h3>
@@ -55,6 +55,18 @@ export default function Join() {
             </div>
             <div className="field"><label htmlFor="pn">Parent or guardian name</label><input id="pn" required value={f.parent_name} onChange={set('parent_name')} autoComplete="name" /></div>
             <div className="field"><label htmlFor="pc">Parent phone or email</label><input id="pc" required value={f.parent_contact} onChange={set('parent_contact')} autoComplete="email" /></div>
+            <fieldset className="field timepick">
+              <legend>Which Sunday time works best for your family?</legend>
+              <div className="timepick-grid">
+                {PROGRAM.timeOptions.map(o => (
+                  <label key={o.id} className={f.time_pref === o.id ? 'on' : ''}>
+                    <input type="radio" name="time_pref" value={o.id} required checked={f.time_pref === o.id} onChange={set('time_pref')} />
+                    <b>{o.label}</b>{o.hint && <span>{o.hint}</span>}
+                  </label>
+                ))}
+              </div>
+              <span className="small">We'll pick the time most families can make and confirm it before Week 1.</span>
+            </fieldset>
             <div className="field"><label htmlFor="ec">Emergency contact (name and phone, if not you)</label><input id="ec" required value={f.emergency_contact} onChange={set('emergency_contact')} placeholder="Same as above, or another adult" /></div>
             <div className="field">
               <label id="wv-label">Participation waiver</label>
