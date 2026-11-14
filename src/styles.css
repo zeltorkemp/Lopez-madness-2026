@@ -202,7 +202,7 @@ input[type=range] { width: 100%; accent-color: var(--red); min-height: 44px; }
 
 /* Speed Tools */
 .timer-face { margin: 6px 0 14px; padding: 22px 10px 16px; text-align: center; background: var(--panel); border: 1px solid var(--line); transition: background .1s, border-color .1s; }
-.timer-face.set { background: #2A0B0A; border-color: #5A1714; }
+.timer-face.marks, .timer-face.set { background: #2A0B0A; border-color: #5A1714; }
 .timer-face.running { background: #0E3B22; border-color: #1E7A45; }
 .timer-num { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: clamp(64px, 22vw, 104px); line-height: 1; color: var(--gold); font-variant-numeric: tabular-nums; }
 .timer-face.running .timer-num { color: #fff; }

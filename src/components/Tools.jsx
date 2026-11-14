@@ -26,9 +26,18 @@ function useStarter() {
     if (ctxRef.current?.state === 'suspended') ctxRef.current.resume()
     return ctxRef.current
   }
-  const say = word => {
-    try { const u = new SpeechSynthesisUtterance(word); u.rate = 1; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u) } catch { /* no voice */ }
+  // Speaks a word and calls done() when it finishes (or after a fallback, since some phones never fire onend)
+  const say = (word, done, fallbackMs = 1500) => {
+    let fired = false
+    const finish = () => { if (!fired) { fired = true; done && done() } }
+    try {
+      const u = new SpeechSynthesisUtterance(word); u.rate = 0.95
+      u.onend = finish; u.onerror = finish
+      window.speechSynthesis.cancel(); window.speechSynthesis.speak(u)
+    } catch { /* no voice */ }
+    return setTimeout(finish, fallbackMs)
   }
+  const hush = () => { try { window.speechSynthesis.cancel() } catch { /* ignore */ } }
   // Schedules the GO beep `delay` seconds from now; returns the performance.now() time it will sound.
   const scheduleGo = delay => {
     const c = ctx()
@@ -41,47 +50,55 @@ function useStarter() {
     const lag = (c.outputLatency || c.baseLatency || 0) * 1000
     return performance.now() + delay * 1000 + lag
   }
-  return { ctx, say, scheduleGo }
+  return { ctx, say, hush, scheduleGo }
 }
 
 const DISTANCES = [10, 20]
 
 function Timer() {
   const [dist, setDist] = useState(10)
-  const [state, setState] = useState('ready') // ready | set | running | done
+  const [state, setState] = useState('ready') // ready | marks | set | running | done
   const [elapsed, setElapsed] = useState(0)
   const [list, setList] = useState(load)
   const goAt = useRef(0), raf = useRef(0), timers = useRef([])
-  const { ctx, say, scheduleGo } = useStarter()
+  const { ctx, say, hush, scheduleGo } = useStarter()
 
-  const stopLoops = () => { cancelAnimationFrame(raf.current); timers.current.forEach(clearTimeout); timers.current = [] }
+  const stopLoops = () => { cancelAnimationFrame(raf.current); timers.current.forEach(clearTimeout); timers.current = []; goAt.current = Infinity }
   useEffect(() => stopLoops, [])
 
   const start = () => {
     ctx() // unlock audio inside the tap
-    stopLoops(); setElapsed(0); setState('set')
-    say('Set')
-    const delay = 1.4 + Math.random() * 1.6 // random so nobody can guess the start
-    goAt.current = scheduleGo(delay)
+    stopLoops(); setElapsed(0); setState('marks')
     const tick = () => {
       const t = performance.now() - goAt.current
       if (t >= 0) { setState(s => (s === 'set' ? 'running' : s)); setElapsed(t) }
       raf.current = requestAnimationFrame(tick)
     }
-    raf.current = requestAnimationFrame(tick)
+    // Like a real track start: "On your marks", time to get down, "Set", then a random hold before Go
+    timers.current.push(setTimeout(() => {
+      timers.current.push(say('On your marks', null, 2000))
+      timers.current.push(setTimeout(() => {
+        setState('set')
+        timers.current.push(say('Set', () => {
+          const hold = 1.6 + Math.random() * 1.2 // 1.6 to 2.8 seconds after "Set" finishes
+          goAt.current = scheduleGo(hold)
+          raf.current = requestAnimationFrame(tick)
+        }))
+      }, 4500))
+    }, 600))
   }
 
   const stop = () => {
     const t = performance.now() - goAt.current
-    stopLoops()
-    if (t < 300) { setState('ready'); setElapsed(0); return } // stopped before or right at Go: discard
+    stopLoops(); hush()
+    if (!(t >= 300)) { setState('ready'); setElapsed(0); return } // stopped before or right at Go: discard
     const secs = Math.round(t / 10) / 100
     setElapsed(secs * 1000); setState('done')
     const next = [...list, { d: dist, s: secs, at: Date.now() }]
     setList(next); save(next)
   }
 
-  const cancel = () => { stopLoops(); setState('ready'); setElapsed(0) }
+  const cancel = () => { stopLoops(); hush(); setState('ready'); setElapsed(0) }
 
   const mine = list.filter(t => t.d === dist)
   const weekAgo = Date.now() - 7 * 86400000
@@ -89,7 +106,7 @@ function Timer() {
   const bestEver = mine.reduce((m, t) => (m == null || t.s < m ? t.s : m), null)
   const recent = mine.slice(-5).reverse()
   const runs = streak(list)
-  const busy = state === 'set' || state === 'running'
+  const busy = state === 'marks' || state === 'set' || state === 'running'
 
   const clearAll = () => {
     if (!window.confirm || window.confirm('Clear all practice times on this phone?')) { setList([]); save([]) }
@@ -99,7 +116,7 @@ function Timer() {
     <section className="section">
       <p className="eyebrow">At-home timer</p>
       <h2>Practice sprints</h2>
-      <p className="sub">Turn the volume up, tap Start and stand at the finish. The phone says "Set," then beeps Go after a random pause and starts the clock on the beep. Tap Stop as the runner crosses the line.</p>
+      <p className="sub">Turn the volume up, tap Start and stand at the finish. The phone calls "On your marks," then "Set," then beeps Go after a random 1.6 to 2.8 second hold and starts the clock on the beep. Tap Stop as the runner crosses the line.</p>
 
       <div className="toggle" role="group" aria-label="Sprint distance">
         {DISTANCES.map(d => (
@@ -108,14 +125,15 @@ function Timer() {
       </div>
 
       <div className={`timer-face ${state}`} aria-live="polite">
-        <div className="timer-num">{state === 'set' ? 'SET' : (elapsed / 1000).toFixed(2)}</div>
-        <div className="small">{state === 'set' ? 'Wait for the beep' : state === 'running' ? 'GO' : 'seconds'}</div>
+        <div className="timer-num" style={state === 'marks' ? { fontSize: 'clamp(40px, 12vw, 64px)' } : null}>{state === 'marks' ? 'ON YOUR MARKS' : state === 'set' ? 'SET' : (elapsed / 1000).toFixed(2)}</div>
+        <div className="small">{state === 'marks' ? 'Get in your stance' : state === 'set' ? 'Wait for the beep' : state === 'running' ? 'GO' : 'seconds'}</div>
       </div>
 
       {busy
-        ? <button className="btn btn-red btn-block huge" onClick={stop}>Stop</button>
+        ? (state === 'running'
+          ? <button className="btn btn-red btn-block huge" onClick={stop}>Stop</button>
+          : <button className="btn btn-ghost btn-block huge" onClick={cancel}>Cancel</button>)
         : <button className="btn btn-red btn-block huge" onClick={start}>{state === 'done' ? 'Run it again' : 'Start'}</button>}
-      {state === 'set' && <button className="btn btn-ghost btn-block" onClick={cancel} style={{ marginTop: 10 }}>Cancel</button>}
 
       <div className="tool-stats">
         <div><span>Best this week</span><b className="good">{bestWeek != null ? `${bestWeek.toFixed(2)}s` : '–'}</b></div>
