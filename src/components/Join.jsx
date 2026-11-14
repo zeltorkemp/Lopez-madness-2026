@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { PROGRAM, FUND, LIVE } from '../config.js'
 import { submitRsvp } from '../lib/store.js'
 
-const EMPTY = { athlete_name: '', age: '', sport: '', parent_name: '', parent_contact: '', waiver: false, photo_ok: false }
+const EMPTY = { athlete_name: '', age: '', sport: '', parent_name: '', parent_contact: '', preferred_time: '', waiver: false, photo_ok: false }
 
 export default function Join() {
   const [f, setF] = useState(EMPTY)
@@ -45,6 +45,15 @@ export default function Join() {
             </div>
             <div className="field"><label htmlFor="pn">Parent or guardian name</label><input id="pn" required value={f.parent_name} onChange={set('parent_name')} autoComplete="name" /></div>
             <div className="field"><label htmlFor="pc">Parent phone or email</label><input id="pc" required value={f.parent_contact} onChange={set('parent_contact')} autoComplete="email" /></div>
+            <div className="field"><label htmlFor="pt">Best Sunday time for your family</label>
+              <select id="pt" value={f.preferred_time} onChange={set('preferred_time')}>
+                <option value="">No preference</option>
+                <option>Morning (9 to 11 AM)</option>
+                <option>Midday (11 AM to 1 PM)</option>
+                <option>Afternoon (1 to 4 PM)</option>
+              </select>
+            </div>
+            <p className="small" style={{ marginTop: -4 }}>{PROGRAM.startLabel}. We pick the start date and time based on sign-ups.</p>
             <label className="check"><input type="checkbox" required checked={f.waiver} onChange={set('waiver')} /> I'm the parent or guardian and I agree to the participation waiver.</label>
             <label className="check"><input type="checkbox" checked={f.photo_ok} onChange={set('photo_ok')} /> OK to show my athlete's first name and last initial on the Speed Board.</label>
             <button className="btn btn-red" style={{ width: '100%' }} disabled={status === 'sending'}>{status === 'sending' ? 'Saving…' : 'Reserve my spot'}</button>

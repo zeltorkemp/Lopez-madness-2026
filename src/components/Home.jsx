@@ -56,7 +56,7 @@ export default function Home({ go, athletes, openAthlete }) {
       <section className="section card" aria-label="Spots remaining">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
           <h2 style={{ fontSize: 22, margin: 0 }}>{spotsLeft} of {PROGRAM.cap} spots left</h2>
-          <span className="small">{PROGRAM.startDate ? `Starts ${new Date(`${PROGRAM.startDate}T12:00:00`).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : 'Start date coming soon'}</span>
+          <span className="small">{PROGRAM.startDate ? `Starts ${new Date(`${PROGRAM.startDate}T12:00:00`).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : PROGRAM.startLabel}</span>
         </div>
         <div className="meter"><i style={{ width: `${((PROGRAM.cap - spotsLeft) / PROGRAM.cap) * 100}%` }} /></div>
       </section>
@@ -86,7 +86,7 @@ export default function Home({ go, athletes, openAthlete }) {
         <h2 style={{ fontSize: 24 }}>The details</h2>
         <dl className="info-list">
           <div><dt>Who</dt><dd>Ages {PROGRAM.ages}, any sport</dd></div>
-          <div><dt>When</dt><dd>Sundays · {PROGRAM.time}</dd></div>
+          <div><dt>When</dt><dd>Sundays · {PROGRAM.startDate ? PROGRAM.time : PROGRAM.startLabel}</dd></div>
           <div><dt>Where</dt><dd><a href={PROGRAM.locationMapUrl} target="_blank" rel="noreferrer">{PROGRAM.location}</a></dd></div>
           <div><dt>Cost</dt><dd>Free</dd></div>
           <div><dt>Bring</dt><dd>Water, sneakers or turf cleats</dd></div>

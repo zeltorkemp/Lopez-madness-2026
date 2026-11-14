@@ -10,6 +10,7 @@ create table if not exists rsvps (
   sport text,
   parent_name text not null,
   parent_contact text not null,
+  preferred_time text,
   waiver boolean not null default false,
   photo_ok boolean not null default false,
   created_at timestamptz not null default now()
