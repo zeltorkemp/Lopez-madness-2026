@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { TESTS } from '../data/program.js'
-import { dashMph } from '../lib/stats.js'
 import { GOAL_BANDS } from '../config.js'
 
 /* ---------- storage (practice times stay on this phone) ---------- */
@@ -53,7 +52,7 @@ function useStarter() {
   return { ctx, say, hush, scheduleGo }
 }
 
-const DISTANCES = [10, 20]
+const DISTANCES = [10, 20, 40]
 
 function Timer() {
   const [dist, setDist] = useState(10)
@@ -153,7 +152,7 @@ function Timer() {
       )}
 
       <p className="small" style={{ marginTop: 14, lineHeight: 1.5 }}>
-        Practice times are saved on this phone only. A thumb on Stop is never perfectly on time, so official times come from laser timing on Sundays.
+        Practice times are saved on this phone only. They're great for tracking practice. Official Speed Card times come from Sunday testing, run the same way every week.
         {list.length > 0 && <> <button className="linkish" onClick={clearAll}>Clear my times</button></>}
       </p>
     </section>
@@ -161,14 +160,17 @@ function Timer() {
 }
 
 /* ---------- goal calculator ---------- */
-const LIMITS = { dash: [2.5, 8], shuttle: [4, 10], jump: [20, 130] }
+const LIMITS = { dash: [2.5, 8], forty: [4, 12], shuttle: [4, 10], jump: [20, 130] }
+const YARDS = { dash: 20, forty: 40 }
+const GOAL_TESTS = [TESTS[0], { id: 'forty', name: '40-Yard Dash', unit: 's', lowerIsBetter: true }, ...TESTS.slice(1)]
+const mph = (yards, s) => Math.round(((yards * 3) / 5280 / (s / 3600)) * 10) / 10
 
 function Goal() {
   const [test, setTest] = useState('dash')
   const [raw, setRaw] = useState('')
   const [err, setErr] = useState('')
   const [shared, setShared] = useState('')
-  const t = TESTS.find(x => x.id === test)
+  const t = GOAL_TESTS.find(x => x.id === test)
   const band = GOAL_BANDS[test]
   const v = Number(raw)
   const [lo, hi] = LIMITS[test]
@@ -187,8 +189,8 @@ function Goal() {
       const saved = v - a, savedMax = v - b
       res = {
         range: `${b.toFixed(2)} to ${a.toFixed(2)}s`, stretch: `${s.toFixed(2)}s`,
-        extra: test === 'dash' ? `Now ${dashMph(v)} mph. At ${a.toFixed(2)}s that's ${dashMph(a)} mph.` : null,
-        ahead: test === 'dash' ? `That's ${saved.toFixed(2)} to ${savedMax.toFixed(2)}s faster, which finishes about ${Math.round(saved * (60 / v))} to ${Math.round(savedMax * (60 / v))} feet ahead of the Week 1 you.` : `That's ${saved.toFixed(2)} to ${savedMax.toFixed(2)}s faster, an edge on every cut in a game.`,
+        extra: YARDS[test] ? `Now ${mph(YARDS[test], v)} mph. At ${a.toFixed(2)}s that's ${mph(YARDS[test], a)} mph.` : null,
+        ahead: YARDS[test] ? `That's ${saved.toFixed(2)} to ${savedMax.toFixed(2)}s faster, which finishes about ${Math.round(saved * (YARDS[test] * 3 / v))} to ${Math.round(savedMax * (YARDS[test] * 3 / v))} feet ahead of the Week 1 you.` : `That's ${saved.toFixed(2)} to ${savedMax.toFixed(2)}s faster, an edge on every cut in a game.`,
         shareText: `My Week 10 goal for the ${t.name}: ${b.toFixed(2)} to ${a.toFixed(2)}s.`,
       }
     } else {
@@ -219,12 +221,12 @@ function Goal() {
         <div className="field">
           <label htmlFor="g-test">Test</label>
           <select id="g-test" value={test} onChange={e => { setTest(e.target.value); setRaw(''); setErr(''); setShared('') }}>
-            {TESTS.map(x => <option key={x.id} value={x.id}>{x.name}</option>)}
+            {GOAL_TESTS.map(x => <option key={x.id} value={x.id}>{x.name}</option>)}
           </select>
         </div>
         <div className="field">
           <label htmlFor="g-val">Week 1 {t.unit === 's' ? 'time (sec)' : 'jump (inches)'}</label>
-          <input id="g-val" inputMode="decimal" type="number" step={t.unit === 's' ? '0.01' : '1'} placeholder={t.unit === 's' ? (test === 'dash' ? '4.32' : '6.40') : '52'} value={raw} onChange={onChange} aria-invalid={!!err} />
+          <input id="g-val" inputMode="decimal" type="number" step={t.unit === 's' ? '0.01' : '1'} placeholder={t.unit === 's' ? ({ dash: '4.32', forty: '7.10', shuttle: '6.40' }[test]) : '52'} value={raw} onChange={onChange} aria-invalid={!!err} />
         </div>
       </div>
       {err && <p role="alert" style={{ color: 'var(--red)', fontSize: 13, margin: '-6px 0 10px' }}>{err}</p>}
