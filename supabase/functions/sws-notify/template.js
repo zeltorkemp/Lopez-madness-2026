@@ -19,7 +19,7 @@ export function parentEmail(r) {
   const rows = [
     ['Athlete', `${kid}${r.age ? `, age ${r.age}` : ''}`],
     ['Starts', 'January 2027, Sundays'],
-    ['Time', wait ? 'Confirmed by email' : `Confirmed by email before Week 1 (you picked ${pref.toLowerCase()})`],
+    ['Time', wait || !r.time_pref ? 'Confirmed by email before Week 1' : `Confirmed by email before Week 1 (you picked ${pref.toLowerCase()})`],
     ['Where', 'Buffaloe Road Athletic Park track'],
     ['Bring', 'Water, sneakers or turf cleats'],
   ]
