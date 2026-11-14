@@ -24,7 +24,7 @@ async function rest(path, options = {}) {
   return res.status === 204 ? null : res.json()
 }
 
-const DEMO_BASELINE = 7 // sample confirmed sign-ups shown in preview mode
+const DEMO_BASELINE = 3 // reserved spots (Kai, Kannon, one more); live mode seeds these in the database
 
 // Returns the saved row, including status: 'confirmed' or 'waitlist'.
 // Live mode: the database decides the status (see supabase/schema.sql).

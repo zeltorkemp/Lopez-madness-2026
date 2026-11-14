@@ -34,6 +34,13 @@ create trigger rsvps_status before insert on rsvps for each row execute function
 alter table rsvps enable row level security;
 create policy "anyone can sign up" on rsvps for insert to anon with check (waiver = true);
 
+-- Three spots reserved from day one: Kai, Kannon and one more athlete.
+-- Edit the third name when you know it.
+insert into rsvps (athlete_name, parent_name, parent_contact, waiver, photo_ok, updates_ok)
+select v.name, 'Gabe Lopez', 'reserved', true, false, false
+from (values ('Kai'), ('Kannon'), ('Reserved athlete')) as v(name)
+where not exists (select 1 from rsvps);
+
 create or replace view rsvp_count as
 select count(*) filter (where status = 'confirmed')::int as confirmed,
        count(*) filter (where status = 'waitlist')::int as waitlist
