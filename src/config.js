@@ -12,7 +12,8 @@ export const PROGRAM = {
   cap: 20,
   coach: 'Coach Gabe Lopez',
   contact: '', // e.g. 'coach@lopezmadness.com'
-  cashApp: '', // e.g. '$SpeedWorkSundays'
+  cashApp: '$SpeedWorkSundays',
+  cashAppUrl: 'https://cash.app/$SpeedWorkSundays',
 }
 
 export const FUND = {

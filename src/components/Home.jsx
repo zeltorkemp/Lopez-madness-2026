@@ -102,7 +102,10 @@ export default function Home({ go, athletes, openAthlete }) {
           <span className="mono">${FUND.raised}</span><span className="small">goal ${FUND.goal}</span>
         </div>
         <div className="meter"><i style={{ width: `${fundPct}%` }} /></div>
-        <a className="btn btn-ghost" href="#join" style={{ marginTop: 16, width: '100%' }}>Help out</a>
+        <div className="btn-row" style={{ marginTop: 16 }}>
+          <a className="btn btn-red" href={PROGRAM.cashAppUrl} target="_blank" rel="noreferrer" style={{ flex: 1 }}>Donate {PROGRAM.cashApp}</a>
+          <a className="btn btn-ghost" href="#join" style={{ flex: 1 }}>See the gear list</a>
+        </div>
       </section>
     </>
   )

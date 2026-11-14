@@ -86,6 +86,7 @@ export default function Join() {
         <div className="test-tile" style={{ marginTop: 12, textAlign: 'center' }}>
           <span className="small">Cash App</span>
           <div className="display" style={{ fontSize: 30 }}>{PROGRAM.cashApp || 'Coming soon'}</div>
+          {PROGRAM.cashAppUrl && <a className="btn btn-red" href={PROGRAM.cashAppUrl} target="_blank" rel="noreferrer" style={{ width: '100%', marginTop: 12 }}>Donate on Cash App</a>}
         </div>
       </section>
 
