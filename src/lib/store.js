@@ -33,7 +33,9 @@ export async function submitRsvp(rsvp) {
     const status = await rest('rpc/sws_signup', { method: 'POST', body: JSON.stringify({
       p_athlete_name: rsvp.athlete_name, p_age: rsvp.age, p_sport: rsvp.sport,
       p_parent_name: rsvp.parent_name, p_parent_contact: rsvp.parent_contact,
-      p_waiver: rsvp.waiver, p_photo_ok: rsvp.photo_ok, p_updates_ok: rsvp.updates_ok,
+      p_emergency_contact: rsvp.emergency_contact, p_signature_name: rsvp.signature_name,
+      p_waiver: rsvp.waiver, p_waiver_version: rsvp.waiver_version,
+      p_photo_ok: rsvp.photo_ok, p_updates_ok: rsvp.updates_ok,
     }) })
     return { ...rsvp, status }
   }

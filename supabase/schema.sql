@@ -104,3 +104,13 @@ end $$;
 
 revoke all on function sws_signup, sws_rsvp_counts, sws_log_result from public;
 grant execute on function sws_signup, sws_rsvp_counts, sws_log_result to anon;
+
+-- Migration "speed_work_sundays_waiver" (2026-11-14): waiver record per sign-up.
+-- Waiver text lives in src/data/waiver.js; WAIVER_VERSION is stored with each sign-up.
+alter table sws_rsvps
+  add column if not exists emergency_contact text,
+  add column if not exists signature_name text,
+  add column if not exists waiver_version text,
+  add column if not exists waiver_agreed_at timestamptz;
+-- sws_signup was replaced with an 11-argument version that requires
+-- emergency contact and typed signature, and stamps waiver_version + time.

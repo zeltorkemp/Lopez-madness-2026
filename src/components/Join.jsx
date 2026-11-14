@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { PROGRAM, FUND, LIVE } from '../config.js'
 import { submitRsvp, rsvpCount } from '../lib/store.js'
+import { WAIVER, WAIVER_VERSION } from '../data/waiver.js'
 
-const EMPTY = { athlete_name: '', age: '', sport: '', parent_name: '', parent_contact: '', waiver: false, photo_ok: false, updates_ok: true }
+const EMPTY = { athlete_name: '', age: '', sport: '', parent_name: '', parent_contact: '', emergency_contact: '', signature_name: '', waiver: false, photo_ok: false, updates_ok: true }
 
 export default function Join() {
   const [f, setF] = useState(EMPTY)
@@ -18,7 +19,7 @@ export default function Join() {
     if (!f.waiver) return
     setStatus('sending')
     try {
-      const row = await submitRsvp({ ...f, age: f.age ? Number(f.age) : null })
+      const row = await submitRsvp({ ...f, age: f.age ? Number(f.age) : null, waiver_version: WAIVER_VERSION })
       setSaved(row)
       setStatus('done')
     } catch {
@@ -54,7 +55,15 @@ export default function Join() {
             </div>
             <div className="field"><label htmlFor="pn">Parent or guardian name</label><input id="pn" required value={f.parent_name} onChange={set('parent_name')} autoComplete="name" /></div>
             <div className="field"><label htmlFor="pc">Parent phone or email</label><input id="pc" required value={f.parent_contact} onChange={set('parent_contact')} autoComplete="email" /></div>
-            <label className="check"><input type="checkbox" required checked={f.waiver} onChange={set('waiver')} /> I'm the parent or guardian and I agree to the participation waiver.</label>
+            <div className="field"><label htmlFor="ec">Emergency contact (name and phone, if not you)</label><input id="ec" required value={f.emergency_contact} onChange={set('emergency_contact')} placeholder="Same as above, or another adult" /></div>
+            <div className="field">
+              <label id="wv-label">Participation waiver</label>
+              <div className="waiver" role="region" aria-labelledby="wv-label" tabIndex={0}>
+                {WAIVER.map(w => <p key={w.title}><b>{w.title}.</b> {w.body}</p>)}
+              </div>
+            </div>
+            <label className="check"><input type="checkbox" required checked={f.waiver} onChange={set('waiver')} /> I'm the parent or legal guardian, I've read the waiver above, and I agree to it for myself and my child.</label>
+            <div className="field"><label htmlFor="sig">Type your full name to sign</label><input id="sig" required value={f.signature_name} onChange={set('signature_name')} autoComplete="name" /></div>
             <label className="check"><input type="checkbox" checked={f.photo_ok} onChange={set('photo_ok')} /> OK to show my athlete's first name and last initial on the Speed Board.</label>
             <label className="check"><input type="checkbox" checked={f.updates_ok} onChange={set('updates_ok')} /> Tell me about extra sessions and future programs.</label>
             <button className="btn btn-red" style={{ width: '100%' }} disabled={status === 'sending'}>{status === 'sending' ? 'Saving…' : full ? 'Join the waitlist' : 'Reserve my spot'}</button>
