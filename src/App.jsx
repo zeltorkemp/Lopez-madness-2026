@@ -57,7 +57,7 @@ export default function App() {
         {tab === 'coach' && <Coach athletes={athletes} onSaved={refresh} />}
         <footer className="footer">
           <p>{PROGRAM.name} · Free youth speed clinic · {PROGRAM.location}</p>
-          <p>{PROGRAM.coach}{PROGRAM.contact ? ` · ${PROGRAM.contact}` : ''}</p>
+          <p>{PROGRAM.coach}{PROGRAM.contact && <> · <a href={`mailto:${PROGRAM.contact}`}>{PROGRAM.contact}</a></>}</p>
           <a href="#coach" className="coach-link">Coach login</a>
         </footer>
       </main>

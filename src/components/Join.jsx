@@ -98,6 +98,7 @@ export default function Join() {
             ['Is it really free?', 'Yes. Donations are optional and only buy equipment.'],
             ['What if it rains?', 'We post updates here by Saturday night.'],
             ['Can parents stay?', 'Please do. We may ask you to help with timing.'],
+            ['Other questions?', `Email ${PROGRAM.contact} and Coach Gabe will get back to you.`],
           ].map(([q, a]) => <div className="drill" key={q}><b>{q}</b><p>{a}</p></div>)}
         </div>
       </section>

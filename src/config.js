@@ -11,7 +11,8 @@ export const PROGRAM = {
   weeks: 10,
   cap: 20,
   coach: 'Coach Gabe Lopez',
-  contact: '', // e.g. 'coach@lopezmadness.com'
+  contact: 'info@speedworksundays.com',
+  siteUrl: 'https://www.speedworksundays.com',
   cashApp: '$SpeedWorkSundays',
   cashAppUrl: 'https://cash.app/$SpeedWorkSundays',
 }
