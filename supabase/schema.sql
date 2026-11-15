@@ -134,3 +134,6 @@ alter table sws_results add constraint sws_results_test_check check (test in ('f
 -- which emails the parent a confirmation and info@speedworksundays.com an alert via Gmail SMTP
 -- (secrets GMAIL_USER, GMAIL_APP_PASSWORD). notified_at / notify_result record what happened.
 -- pg_cron job 'sws-notify-retry' re-sends anything still unsent every 10 minutes (last 7 days).
+
+-- Migration "speed_work_sundays_capitalize_names" (2026-11-14): sws_cap() capitalizes the first letter of each
+-- word (keeps the rest as typed); sws_signup applies it to athlete and parent names. Existing rows fixed.
