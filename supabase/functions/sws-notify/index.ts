@@ -72,7 +72,8 @@ Deno.serve(async req => {
     }
     if (!resendParent) {
       const c = coachEmail(r, counts)
-      await mail.sendMail({ from: FROM, to: ALERT_TO, replyTo: r.parent_email || undefined, subject: c.subject, text: c.text })
+      // Straight to the Gmail inbox: routing it through info@ loops back to the sender and Gmail hides it.
+      await mail.sendMail({ from: FROM, to: user, replyTo: r.parent_email || undefined, subject: c.subject, text: c.text })
       sent.push('coach')
     }
 
