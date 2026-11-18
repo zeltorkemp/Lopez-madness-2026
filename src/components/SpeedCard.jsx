@@ -2,8 +2,10 @@ import React, { useEffect } from 'react'
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
 import { TESTS, TEST_WEEKS } from '../data/program.js'
 import { improvement, overallImprovement, fmt, dashMph, lastValue } from '../lib/stats.js'
+import { badgesFor, BADGES } from '../lib/fun.js'
+import RaceTrack from './RaceTrack.jsx'
 
-export default function SpeedCard({ athlete, onClose }) {
+export default function SpeedCard({ athlete, athletes = [], onClose }) {
   useEffect(() => {
     const onKey = e => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', onKey)
@@ -14,6 +16,10 @@ export default function SpeedCard({ athlete, onClose }) {
   const overall = overallImprovement(athlete)
   const forty = lastValue(athlete.results.forty || [])
   const dash = lastValue(athlete.results.dash || [])
+  const ghost = athlete.results.forty?.[0]
+  const yardsAhead = ghost && forty && forty < ghost ? Math.round(40 * (1 - forty / ghost) * 10) / 10 : 0
+  const earned = badgesFor(athlete, athletes)
+  const earnedIds = new Set(earned.map(b => b.id))
 
   return (
     <div className="overlay" onClick={onClose}>
@@ -37,6 +43,36 @@ export default function SpeedCard({ athlete, onClose }) {
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, margin: '18px 0' }}>
           <div className="big-gain">+{overall}%</div>
           <p style={{ margin: '0 0 8px', color: 'var(--soft)', lineHeight: 1.4 }}>faster and stronger overall{forty ? <><br />40-yard average speed: <b className="mono">{dashMph(forty, 40)} mph</b></> : dash ? <><br />20-yard average speed: <b className="mono">{dashMph(dash)} mph</b></> : null}</p>
+        </div>
+
+        {ghost && forty && forty !== ghost && (
+          <div style={{ marginBottom: 18 }}>
+            <RaceTrack
+              title="Beat your ghost"
+              note={yardsAhead > 0 ? `Your Week 1 self finishes ${yardsAhead} yards behind you.` : 'Your Week 1 self is still ahead. Next test, catch them.'}
+              lanes={[
+                { id: 'ghost', label: 'Week 1 you', time: ghost, ghost: true, pair: 'me' },
+                { id: 'now', label: 'You now', time: forty, pair: 'me' },
+              ]}
+              buttonLabel="Race your ghost"
+            />
+          </div>
+        )}
+
+        <div className="badge-case">
+          <div className="badge-case-head"><h3>Badges</h3><span className="small">{earned.length} of {BADGES.length} earned</span></div>
+          <div className="badge-grid">
+            {BADGES.map(b => {
+              const got = earned.find(e => e.id === b.id)
+              return (
+                <div key={b.id} className={`badge ${earnedIds.has(b.id) ? 'got' : 'locked'}`}>
+                  <span className="badge-icon" aria-hidden="true">{b.icon}</span>
+                  <b>{b.label}</b>
+                  <small>{(got || b).desc}</small>
+                </div>
+              )
+            })}
+          </div>
         </div>
 
         <div style={{ display: 'grid', gap: 10 }}>

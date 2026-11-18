@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { PROGRAM, FUND } from '../config.js'
 import { rsvpCount } from '../lib/store.js'
-import { overallImprovement } from '../lib/stats.js'
+import { overallImprovement, lastValue } from '../lib/stats.js'
+import { squadStats, BADGES } from '../lib/fun.js'
+import RaceTrack from './RaceTrack.jsx'
 
 function useCountdown(dateStr) {
   const [now, setNow] = useState(Date.now())
@@ -20,6 +22,11 @@ export default function Home({ go, athletes, openAthlete }) {
   const full = spotsLeft === 0
   const ranked = useMemo(() => [...athletes].sort((a, b) => overallImprovement(b) - overallImprovement(a)).slice(0, 3), [athletes])
   const sample = ranked.some(a => a.sample)
+  const squad = useMemo(() => squadStats(athletes), [athletes])
+  const goal = PROGRAM.cap // one second per athlete spot
+  const squadPct = Math.min(100, (squad.seconds / goal) * 100)
+  const star = ranked[0]
+  const starGhost = star?.results?.forty?.[0], starNow = star ? lastValue(star.results.forty || []) : null
   const fundPct = Math.min(100, Math.round((FUND.raised / FUND.goal) * 100))
 
   return (
@@ -56,6 +63,44 @@ export default function Home({ go, athletes, openAthlete }) {
           </>
         )}
       </section>
+
+      <section className="section">
+        <h2>The Squad</h2>
+        <p className="sub">Every second anyone shaves goes into one team total. Fast or new, everyone pushes the squad forward.</p>
+        <div className="squad-stats">
+          <div><b>{count?.confirmed ?? '–'}</b><span>Athletes in</span></div>
+          <div><b>{squad.seconds.toFixed(1)}s</b><span>Shaved{sample ? '*' : ''}</span></div>
+          <div><b>{squad.badges}</b><span>Badges{sample ? '*' : ''}</span></div>
+        </div>
+        <div className="squad-goal">
+          <div className="squad-goal-head"><b>Squad goal: {goal} seconds faster, together</b><span className="mono">{Math.round(squadPct)}%</span></div>
+          <div className="squad-meter" role="img" aria-label={`${squad.seconds} of ${goal} seconds`}>
+            <i style={{ width: `${squadPct}%` }} />
+            {[0.25, 0.5, 0.75].map(m => <span key={m} className={squadPct >= m * 100 ? 'hit' : ''} style={{ left: `${m * 100}%` }} />)}
+          </div>
+          <p className="small" style={{ margin: '8px 0 0' }}>Counts the 40 and the shuttle for every athlete, Week 1 to now.{sample ? ' *Sample numbers until Week 1.' : ''}</p>
+        </div>
+        <p className="eyebrow" style={{ margin: '22px 0 10px' }}>Badges to chase</p>
+        <div className="badge-strip">
+          {BADGES.map(b => <div key={b.id} className="badge-pill"><span aria-hidden="true">{b.icon}</span><b>{b.label}</b><small>{b.desc}</small></div>)}
+        </div>
+      </section>
+
+      {star && starGhost && starNow && (
+        <section className="section">
+          <h2>Race your ghost</h2>
+          <p className="sub">Week 10 you vs Week 1 you, at real speed. Every Speed Card has one.</p>
+          <RaceTrack
+            title={star.name}
+            note={star.sample ? 'Sample athlete' : undefined}
+            lanes={[
+              { id: 'g', label: 'Week 1', time: starGhost, ghost: true, pair: 'x' },
+              { id: 'n', label: 'Week 10', time: starNow, pair: 'x' },
+            ]}
+            buttonLabel="Race the ghost"
+          />
+        </section>
+      )}
 
       <section className="section">
         <h2>Inside the clinic</h2>

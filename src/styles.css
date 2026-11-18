@@ -230,3 +230,61 @@ input[type=range] { width: 100%; accent-color: var(--red); min-height: 44px; }
 .timepick-grid label:focus-within { outline: 2px solid var(--red); outline-offset: 1px; }
 .timepick-grid b { font-size: 15px; }
 .timepick-grid span { font-size: 12px; color: var(--muted); }
+
+/* Race track */
+.race { background: var(--panel); border: 1px solid var(--line); padding: 14px; margin: 0 0 16px; }
+.race-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+.race-head b { display: block; font-size: 16px; }
+.race-head span:not(.race-clock) { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
+.race-clock { flex: none; font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 22px; color: var(--gold); min-width: 74px; text-align: right; }
+.lanes { display: grid; gap: 6px; margin-bottom: 12px; }
+.lane { display: grid; grid-template-columns: 92px 1fr; align-items: center; gap: 8px; }
+.lane.pair-start:not(:first-child) { margin-top: 8px; }
+.lane-name { min-width: 0; }
+.lane-name b { display: block; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lane-name small { display: block; font-size: 11px; color: var(--good); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lane.ghost .lane-name b { color: var(--muted); font-weight: 600; }
+.lane-track { position: relative; height: 28px; background: repeating-linear-gradient(90deg, transparent 0 calc(10% - 1px), rgba(255,255,255,0.06) calc(10% - 1px) 10%), #070B14; border-right: 3px solid #fff; }
+.runner { position: absolute; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: var(--red); box-shadow: 0 0 12px rgba(255,59,48,0.8); }
+.lane.ghost .runner { background: rgba(255,255,255,0.35); box-shadow: none; border: 1px dashed rgba(255,255,255,0.7); }
+.lane.won .runner { background: var(--gold); box-shadow: 0 0 14px rgba(255,211,77,0.9); }
+.lane-time { position: absolute; right: 24px; top: 50%; transform: translateY(-50%); font-size: 12px; font-style: normal; font-weight: 700; color: var(--muted); }
+.lane.won .lane-time { color: var(--gold); }
+@media (prefers-reduced-motion: reduce) { .runner { transition: none; } }
+
+/* Badges */
+.mini-badges { display: flex !important; gap: 2px; margin-top: 4px; font-size: 14px; }
+.mini-badges i { font-style: normal; }
+.badge-case { margin-bottom: 18px; }
+.badge-case-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.badge-case-head h3 { font-size: 17px; }
+.badge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.badge { background: var(--panel); border: 1px solid var(--line); padding: 12px; }
+.badge-icon { display: block; font-size: 26px; line-height: 1; margin-bottom: 6px; }
+.badge b { display: block; font-size: 14px; }
+.badge small { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.35; }
+.badge.got { border-color: rgba(255,211,77,0.55); background: linear-gradient(180deg, rgba(255,211,77,0.10), var(--panel)); }
+.badge.got b { color: var(--gold); }
+.badge.locked .badge-icon { filter: grayscale(1); opacity: 0.35; }
+.badge.locked b { color: var(--muted); }
+.badge-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x mandatory; }
+.badge-pill { flex: none; width: 150px; scroll-snap-align: start; background: var(--panel); border: 1px solid var(--line); padding: 12px; }
+.badge-pill span { display: block; font-size: 24px; margin-bottom: 6px; }
+.badge-pill b { display: block; font-size: 14px; }
+.badge-pill small { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.35; }
+
+/* Squad */
+.squad-stats { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); background: var(--panel); text-align: center; }
+.squad-stats div { padding: 14px 4px; border-right: 1px solid var(--line); }
+.squad-stats div:last-child { border-right: 0; }
+.squad-stats b { display: block; font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 26px; line-height: 1; color: var(--good); }
+.squad-stats div:first-child b { color: var(--gold); }
+.squad-stats span { display: block; margin-top: 6px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.squad-goal { margin-top: 14px; }
+.squad-goal-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; margin-bottom: 8px; font-size: 14px; }
+.squad-goal-head .mono { color: var(--gold); font-weight: 700; }
+.squad-meter { position: relative; height: 14px; background: var(--panel-2); }
+.squad-meter > i { display: block; height: 100%; background: linear-gradient(90deg, var(--red), var(--gold)); transition: width 1.2s ease; }
+.squad-meter > span { position: absolute; top: -3px; width: 2px; height: 20px; background: var(--line); }
+.squad-meter > span.hit { background: var(--gold); }
+.mini-badges em { font-style: normal; font-size: 11px; font-weight: 700; color: var(--gold); align-self: center; margin-left: 4px; }
