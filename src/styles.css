@@ -288,3 +288,39 @@ input[type=range] { width: 100%; accent-color: var(--red); min-height: 44px; }
 .squad-meter > span { position: absolute; top: -3px; width: 2px; height: 20px; background: var(--line); }
 .squad-meter > span.hit { background: var(--gold); }
 .mini-badges em { font-style: normal; font-size: 11px; font-weight: 700; color: var(--gold); align-self: center; margin-left: 4px; }
+
+/* Tools menu and games */
+.tool-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.tool-menu button { display: grid; grid-template-columns: 30px 1fr; grid-template-rows: auto auto; column-gap: 8px; align-items: center; text-align: left; padding: 12px; min-height: 64px; background: var(--panel); border: 1px solid var(--line); cursor: pointer; color: var(--text); }
+.tool-menu button span { grid-row: span 2; font-size: 24px; line-height: 1; }
+.tool-menu button b { font-size: 14px; }
+.tool-menu button small { font-size: 12px; color: var(--muted); }
+.tool-menu button.on { border-color: var(--red); background: linear-gradient(180deg, rgba(255,59,48,0.14), var(--panel)); }
+.tool-menu button:last-child:nth-child(odd) { grid-column: span 2; }
+.tool-pane { margin-top: 18px; }
+.players { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; }
+.add-player input { min-height: 44px; width: 120px; border-radius: 999px; border: 1px solid var(--red); background: var(--bg); color: var(--text); padding: 0 14px; font-size: 16px; }
+.phone-board { margin-top: 14px; border: 1px solid var(--line); background: var(--panel); padding: 12px 14px 6px; }
+.phone-board .eyebrow { margin: 0 0 6px; }
+.phone-board div { display: grid; grid-template-columns: 30px 1fr auto; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); }
+.phone-board div.me b { color: var(--gold); }
+.phone-board em { font-style: normal; font-weight: 700; color: var(--good); }
+.react-pad { width: 100%; min-height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; border: 0; cursor: pointer; background: var(--panel); border: 1px solid var(--line); color: #fff; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+.react-pad.wait { background: #3A0D0B; border-color: #7A1C17; }
+.react-pad.go { background: #13A24B; border-color: #4ADE80; }
+.react-pad.early { background: #3A2A06; border-color: var(--gold); }
+.react-big { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: clamp(40px, 13vw, 64px); line-height: 1; }
+.react-small { font-size: 14px; color: rgba(255,255,255,0.8); padding: 0 16px; }
+.react-rate { font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; font-size: 14px; }
+.react-rate.gold { color: var(--gold); } .react-rate.good { color: var(--good); }
+.dots { display: flex; justify-content: center; gap: 8px; margin: 12px 0 0; }
+.dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--panel-2); border: 1px solid var(--line); }
+.dots i.on { background: var(--good); border-color: var(--good); }
+.feet-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.feet-head b { font-family: 'Chakra Petch', sans-serif; font-size: 56px; line-height: 1; color: var(--good); }
+.feet-head span { font-family: 'Chakra Petch', sans-serif; font-size: 26px; color: var(--gold); }
+.feet-pads { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.feet-pad { min-height: 190px; border: 1px solid var(--line); background: var(--panel); color: var(--text); font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 0.1em; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+.feet-pad.hit { background: rgba(255,59,48,0.25); border-color: var(--red); }
+.feet-pad:disabled { opacity: .5; }
+.players, .tool-pane { scroll-margin-top: 76px; }
