@@ -120,7 +120,7 @@ export default function Home({ go, athletes, openAthlete }) {
         <h2>The details</h2>
         <dl className="info-list">
           <div><dt>Who</dt><dd>Ages {PROGRAM.ages}, any sport</dd></div>
-          <div><dt>When</dt><dd>Sundays, {PROGRAM.startLabel.toLowerCase()}<br /><span className="small">{PROGRAM.timeNote}</span></dd></div>
+          <div><dt>When</dt><dd>Sundays, {PROGRAM.startLabel.replace(/^Starting/, 'starting')}<br /><span className="small">{PROGRAM.timeNote}</span></dd></div>
           <div><dt>Where</dt><dd><a href={PROGRAM.locationMapUrl} target="_blank" rel="noreferrer">{PROGRAM.location}</a></dd></div>
           <div><dt>Cost</dt><dd>Free</dd></div>
           <div><dt>Bring</dt><dd>Water, sneakers or turf cleats</dd></div>

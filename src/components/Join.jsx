@@ -32,7 +32,7 @@ export default function Join() {
       <section className="section">
         <h2>{full ? 'Join the waitlist' : 'Reserve a spot'}<small>{full
           ? `All ${PROGRAM.cap} spots are taken${counts?.waitlist ? ` and ${counts.waitlist} ${counts.waitlist === 1 ? 'family is' : 'families are'} waiting` : ''}. Join the waitlist: you're first in line if a spot opens or we add a second session.`
-          : `Free. ${PROGRAM.cap} athletes max so every kid gets coached. Sundays, ${PROGRAM.startLabel.toLowerCase()}. Pick the Sunday time that works for your family below.`}</small></h2>
+          : `Free. ${PROGRAM.cap} athletes max so every kid gets coached. Sundays, ${PROGRAM.startLabel.replace(/^Starting/, 'starting')}. Pick the Sunday time that works for your family below.`}</small></h2>
         {status === 'done' ? (
           <div className="success" role="status">
             <h3 style={{ fontSize: 26 }}>{saved?.status === 'waitlist' ? "You're on the waitlist" : "You're in!"}</h3>
