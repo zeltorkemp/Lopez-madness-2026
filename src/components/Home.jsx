@@ -76,8 +76,10 @@ export default function Home({ go, athletes, openAthlete }) {
           <div className="squad-goal-head"><b>Squad goal: {goal} seconds faster, together</b><span className="mono">{Math.round(squadPct)}%</span></div>
           <div className="squad-meter" role="img" aria-label={`${squad.seconds} of ${goal} seconds`}>
             <i style={{ width: `${squadPct}%` }} />
+            <em className="meter-prize" aria-hidden="true">🍕</em>
             {[0.25, 0.5, 0.75].map(m => <span key={m} className={squadPct >= m * 100 ? 'hit' : ''} style={{ left: `${m * 100}%` }} />)}
           </div>
+          <p className="pizza">🍕 Hit the goal and the whole squad gets a pizza party after the Week 10 workout.</p>
           <p className="small" style={{ margin: '8px 0 0' }}>Counts the 40 and the shuttle for every athlete, Week 1 to now.{sample ? ' *Sample numbers until Week 1.' : ''}</p>
         </div>
         <p className="eyebrow" style={{ margin: '22px 0 10px' }}>Badges to chase</p>

@@ -324,3 +324,5 @@ input[type=range] { width: 100%; accent-color: var(--red); min-height: 44px; }
 .feet-pad.hit { background: rgba(255,59,48,0.25); border-color: var(--red); }
 .feet-pad:disabled { opacity: .5; }
 .players, .tool-pane { scroll-margin-top: 76px; }
+.pizza { margin: 10px 0 0; padding: 10px 12px; background: rgba(255,211,77,0.08); border-left: 3px solid var(--gold); color: #FDE68A; font-weight: 600; font-size: 14px; line-height: 1.4; }
+.squad-meter .meter-prize { position: absolute; right: -6px; top: 50%; transform: translateY(-50%); font-style: normal; font-size: 20px; }
