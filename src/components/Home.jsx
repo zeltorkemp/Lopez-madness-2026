@@ -120,9 +120,9 @@ export default function Home({ go, athletes, openAthlete }) {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l2 2M9 2h6" /></svg>
             <b>Speed Tools</b><span>Home sprint timer and a Week 10 goal calculator.</span><em>Try it →</em>
           </button>
-          <button className="feature" onClick={() => go('plan')}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" /></svg>
-            <b>10-Week Plan</b><span>Drills, focus and at-home challenges.</span><em>See week 1 →</em>
+          <button className="feature" onClick={() => go('learn')}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M2 8l10-5 10 5-10 5zM6 10.5V16c3 2 9 2 12 0v-5.5" /></svg>
+            <b>Speed School</b><span>Lessons, visuals and quizzes. Earn Speed Scholar.</span><em>Start lesson 1 →</em>
           </button>
         </div>
       </section>

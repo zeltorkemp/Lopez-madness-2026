@@ -5,6 +5,7 @@ import Home from './components/Home.jsx'
 import Tools from './components/Tools.jsx'
 import Board from './components/Board.jsx'
 import Plan from './components/Plan.jsx'
+import School from './components/School.jsx'
 import Join from './components/Join.jsx'
 import Coach from './components/Coach.jsx'
 import SpeedCard from './components/SpeedCard.jsx'
@@ -13,7 +14,7 @@ const TABS = [
   { id: 'home', label: 'Home', icon: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z' },
   { id: 'board', label: 'Speed Board', icon: 'M5 20V10M12 20V4M19 20v-7' },
   { id: 'tools', label: 'Tools', icon: 'M12 8v5l3 2M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM9 2h6' },
-  { id: 'plan', label: 'Plan', icon: 'M4 6h16M4 12h16M4 18h10' },
+  { id: 'learn', label: 'Learn', icon: 'M2 8l10-5 10 5-10 5zM6 10.5V16c3 2 9 2 12 0v-5.5' },
   { id: 'join', label: 'Join', icon: 'M12 5v14M5 12h14' },
 ]
 
@@ -59,7 +60,7 @@ export default function App() {
         {tab === 'home' && <Home go={go} athletes={athletes} openAthlete={openAthlete} />}
         {tab === 'board' && <Board athletes={athletes} openAthlete={openAthlete} />}
         {(tab === 'lab' || tab === 'tools') && <Tools />}
-        {tab === 'plan' && <Plan />}
+        {(tab === 'learn' || tab === 'plan') && <Learn view={tab === 'plan' ? 'plan' : 'school'} go={go} />}
         {tab === 'join' && <Join />}
         {tab === 'coach' && <Coach athletes={athletes} onSaved={refresh} />}
         <footer className="footer">
@@ -71,7 +72,7 @@ export default function App() {
 
       <nav className="tabbar" aria-label="Sections">
         {TABS.map(t => (
-          <a key={t.id} href={`#${t.id}`} className={tab === t.id ? 'active' : ''} aria-current={tab === t.id ? 'page' : undefined}>
+          <a key={t.id} href={`#${t.id}`} className={tab === t.id || (t.id === 'learn' && tab === 'plan') ? 'active' : ''} aria-current={tab === t.id ? 'page' : undefined}>
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={t.icon} /></svg>
             <span>{t.label}</span>
           </a>
@@ -80,5 +81,19 @@ export default function App() {
 
       {open && <SpeedCard athlete={open} athletes={athletes} onClose={closeCard} />}
     </div>
+  )
+}
+
+function Learn({ view, go }) {
+  return (
+    <>
+      <div className="section" style={{ marginTop: 20, marginBottom: 0 }}>
+        <div className="toggle" role="group" aria-label="Learn section" style={{ marginBottom: 0 }}>
+          <button aria-pressed={view === 'school'} onClick={() => go('learn')}>🧠 Speed School</button>
+          <button aria-pressed={view === 'plan'} onClick={() => go('plan')}>📋 10-Week Plan</button>
+        </div>
+      </div>
+      {view === 'school' ? <School /> : <Plan />}
+    </>
   )
 }

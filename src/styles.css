@@ -326,3 +326,58 @@ input[type=range] { width: 100%; accent-color: var(--red); min-height: 44px; }
 .players, .tool-pane { scroll-margin-top: 76px; }
 .pizza { margin: 10px 0 0; padding: 10px 12px; background: rgba(255,211,77,0.08); border-left: 3px solid var(--gold); color: #FDE68A; font-weight: 600; font-size: 14px; line-height: 1.4; }
 .squad-meter .meter-prize { position: absolute; right: -6px; top: 50%; transform: translateY(-50%); font-style: normal; font-size: 20px; }
+
+/* Speed School */
+.scholar { display: flex; gap: 12px; align-items: center; margin: 16px 0 14px; padding: 14px; background: var(--panel); border: 1px solid var(--line); }
+.scholar.got { border-color: rgba(255,211,77,0.6); background: linear-gradient(180deg, rgba(255,211,77,0.12), var(--panel)); }
+.scholar-icon { font-size: 34px; line-height: 1; }
+.scholar:not(.got) .scholar-icon { filter: grayscale(1); opacity: .5; }
+.scholar > div { flex: 1; }
+.scholar b { display: block; font-size: 16px; }
+.scholar.got b { color: var(--gold); }
+.scholar span:not(.scholar-icon) { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
+.scholar-bar { height: 6px; background: var(--panel-2); margin-top: 8px; }
+.scholar-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--red), var(--gold)); transition: width .8s ease; }
+.lessons { display: grid; gap: 10px; }
+.lesson { background: var(--panel); border: 1px solid var(--line); scroll-margin-top: 76px; }
+.lesson.open { border-color: var(--red); }
+.lesson-head { width: 100%; display: grid; grid-template-columns: 40px 1fr 36px; align-items: center; gap: 10px; padding: 14px; background: none; border: 0; cursor: pointer; text-align: left; color: var(--text); min-height: 64px; }
+.lesson-icon { font-size: 28px; }
+.lesson-name small { display: block; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.lesson-name b { font-size: 17px; }
+.lesson-state { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; font-weight: 800; color: var(--muted); }
+.lesson-state.ok { background: var(--good); border-color: var(--good); color: #05220F; }
+.lesson-body { padding: 0 14px 16px; }
+.lesson-visual { background: #070B14; border: 1px solid var(--line); padding: 6px; margin-bottom: 12px; }
+.lesson-visual svg { display: block; }
+.formula { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 12px; text-align: center; }
+.formula div { flex: 1; background: var(--bg); border: 1px solid var(--line); padding: 10px 4px; }
+.formula div.hot { border-color: var(--good); }
+.formula b { display: block; font-family: 'Chakra Petch', sans-serif; font-size: 24px; line-height: 1; }
+.formula div.hot b { color: var(--good); }
+.formula span { display: block; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+.formula i { font-style: normal; font-weight: 800; color: var(--muted); }
+.slider { display: block; margin-bottom: 12px; }
+.slider span { display: flex; justify-content: space-between; font-size: 14px; color: var(--soft); margin-bottom: 4px; }
+.slider span b { color: var(--gold); font-family: 'Chakra Petch', sans-serif; }
+.slider input { width: 100%; accent-color: var(--red); height: 32px; }
+.lesson-callout { margin: 4px 0 14px; padding: 12px; background: var(--bg); border-left: 3px solid var(--good); color: var(--soft); font-size: 14px; line-height: 1.5; }
+.phase-title { font-size: 18px; margin: 4px 0 6px; color: var(--gold); }
+.cues { margin: 0 0 12px; padding-left: 20px; color: var(--soft); line-height: 1.6; }
+.big-stat { margin: 4px 0 14px; padding: 14px; background: var(--bg); border: 1px solid var(--line); }
+.big-stat b { display: block; font-family: 'Chakra Petch', sans-serif; font-size: 40px; line-height: 1; color: var(--good); }
+.big-stat span { display: block; margin-top: 6px; color: var(--soft); font-size: 14px; }
+.quiz { margin-top: 6px; padding-top: 14px; border-top: 1px solid var(--line); }
+.q { border: 0; padding: 0; margin: 0 0 14px; }
+.q legend { font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
+.opt { display: block; width: 100%; text-align: left; min-height: 46px; padding: 10px 14px; margin-bottom: 6px; background: var(--bg); border: 1px solid var(--line); color: var(--text); font-size: 15px; cursor: pointer; border-radius: 10px; }
+.opt.picked { border-color: var(--text); background: var(--panel-2); }
+.opt.right { border-color: var(--good); background: rgba(74,222,128,0.14); }
+.opt.wrong { border-color: var(--red); background: rgba(255,59,48,0.14); }
+.opt:disabled { cursor: default; opacity: 1; }
+.quiz-win { text-align: center; font-weight: 800; color: var(--good); font-size: 18px; margin: 4px 0; }
+.quiz-miss { text-align: center; color: var(--soft); margin: 4px 0 10px; }
+.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 60; overflow: hidden; }
+.confetti i { position: absolute; top: -40px; font-style: normal; font-size: 26px; animation: fall 2.6s ease-in forwards; }
+@keyframes fall { to { transform: translateY(110vh) rotate(540deg); } }
+@media (prefers-reduced-motion: reduce) { .confetti { display: none; } }
