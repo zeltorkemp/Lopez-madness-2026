@@ -45,6 +45,11 @@ function Roster({ pin, onChange }) {
     if (!(n >= 6 && n <= 18) || n === r.age) return
     try { await updateAthlete(pin, { id: r.id, age: n }); setRows(rows.map(x => x.id === r.id ? { ...x, age: n } : x)); setMsg(`${r.display_name}: age ${n} saved.`); onChange() } catch { setMsg('Age not saved. Check the coach PIN.') }
   }
+  const saveSport = async (r, sport) => {
+    const v = sport.trim()
+    if (!v || v === r.sport) return
+    try { await updateAthlete(pin, { id: r.id, sport: v }); setRows(rows.map(x => x.id === r.id ? { ...x, sport: v } : x)); setMsg(`${r.display_name}: sport saved.`); onChange() } catch { setMsg('Sport not saved. Check the coach PIN.') }
+  }
   const saveName = async (r, name) => {
     const v = name.trim()
     if (!v || v === r.display_name) return
@@ -73,6 +78,7 @@ function Roster({ pin, onChange }) {
                 <input className="roster-name" defaultValue={r.display_name} aria-label={`Board name for ${r.full_name}`} onBlur={e => saveName(r, e.target.value)} />
                 <input className={`roster-age ${r.age ? '' : 'need'}`} type="number" inputMode="numeric" defaultValue={r.age ?? ''} placeholder="Age" aria-label={`Age for ${r.display_name}`} onBlur={e => saveAge(r, e.target.value)} />
                 <button className="linkish" onClick={() => copy(cardLink(r.card_token), `${r.display_name}'s link`)}>Copy link</button>
+                <input className="roster-sport" defaultValue={r.sport ?? ''} placeholder="Sport, e.g. Football & Basketball" aria-label={`Sport for ${r.display_name}`} onBlur={e => saveSport(r, e.target.value)} />
                 {r.parent_name && <small>{r.full_name} · parent {r.parent_name}{r.has_times ? ' · timed' : ''}</small>}
               </div>
             ))}

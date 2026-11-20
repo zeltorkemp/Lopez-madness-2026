@@ -3,7 +3,8 @@ import { PROGRAM, FUND, LIVE } from '../config.js'
 import { submitRsvp, rsvpCount } from '../lib/store.js'
 import { WAIVER, WAIVER_VERSION } from '../data/waiver.js'
 
-const EMPTY = { athlete_name: '', age: '', sport: '', parent_name: '', parent_email: '', parent_phone: '', emergency_contact: '', signature_name: '', waiver: false, photo_ok: false, updates_ok: true, time_pref: '' }
+const SPORTS = ['Football', 'Flag Football', 'Soccer', 'Basketball', 'Baseball', 'Softball', 'Track', 'Lacrosse', 'Other']
+const EMPTY = { athlete_name: '', age: '', sport: '', sport2: '', parent_name: '', parent_email: '', parent_phone: '', emergency_contact: '', signature_name: '', waiver: false, photo_ok: false, updates_ok: true, time_pref: '' }
 
 export default function Join() {
   const [f, setF] = useState(EMPTY)
@@ -19,7 +20,9 @@ export default function Join() {
     if (!f.waiver || !f.time_pref) return
     setStatus('sending')
     try {
-      const row = await submitRsvp({ ...f, age: f.age ? Number(f.age) : null, waiver_version: WAIVER_VERSION })
+      const { sport2, ...rest } = f
+      const sport = sport2 && sport2 !== f.sport ? `${f.sport} & ${sport2}` : f.sport
+      const row = await submitRsvp({ ...rest, sport, age: f.age ? Number(f.age) : null, waiver_version: WAIVER_VERSION })
       setSaved(row)
       setStatus('done')
     } catch {
@@ -49,9 +52,15 @@ export default function Join() {
               <div className="field"><label htmlFor="sp">Main sport</label>
                 <select id="sp" value={f.sport} onChange={set('sport')} required>
                   <option value="">Pick one</option>
-                  {['Football', 'Flag Football', 'Soccer', 'Basketball', 'Baseball', 'Softball', 'Track', 'Lacrosse', 'Other'].map(s => <option key={s}>{s}</option>)}
+                  {SPORTS.map(s => <option key={s}>{s}</option>)}
                 </select>
               </div>
+            </div>
+            <div className="field"><label htmlFor="sp2">Second sport <span className="small">(optional)</span></label>
+              <select id="sp2" value={f.sport2} onChange={set('sport2')}>
+                <option value="">None</option>
+                {SPORTS.filter(s => s !== f.sport).map(s => <option key={s}>{s}</option>)}
+              </select>
             </div>
             <div className="field"><label htmlFor="pn">Parent or guardian name</label><input id="pn" required value={f.parent_name} onChange={set('parent_name')} autoComplete="name" /></div>
             <div className="field"><label htmlFor="pe">Parent email</label><input id="pe" type="email" required value={f.parent_email} onChange={set('parent_email')} autoComplete="email" inputMode="email" placeholder="you@email.com" /></div>
