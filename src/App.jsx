@@ -86,7 +86,7 @@ export default function App() {
         </div>
       )}
       <main className="main">
-        {tab === 'home' && <Home go={go} athletes={athletes} openAthlete={openAthlete} />}
+        {tab === 'home' && <Home go={go} athletes={athletes} openAthlete={openAthlete} me={me} />}
         {tab === 'board' && <Board athletes={athletes} openAthlete={openAthlete} />}
         {(tab === 'lab' || tab === 'tools') && <Tools />}
         {(tab === 'learn' || tab === 'plan') && <Learn view={tab === 'plan' ? 'plan' : 'school'} go={go} />}

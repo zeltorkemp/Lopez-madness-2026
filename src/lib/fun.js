@@ -73,3 +73,24 @@ export function squadStats(athletes) {
   }
   return { seconds: Math.round(seconds * 100) / 100, inches: Math.round(inches), prs, badges }
 }
+
+// How close an athlete is to each badge they don't have yet (0 to 1), closest first.
+export function badgeProgress(athlete, athletes = []) {
+  const have = new Set(badgesFor(athlete, athletes).map(b => b.id))
+  const r = athlete.results || {}
+  const gain = id => improvement(id, r[id])
+  const f0 = r.forty?.[0], f1 = lastValue(r.forty || [])
+  const tested = !athlete.empty
+  const rows = [
+    ['scholar', (athlete.lessons || 0) / 3, `${athlete.lessons || 0} of 3 lessons passed`],
+    ['ghost', f0 != null && f1 != null ? (f0 - f1) / 0.4 : 0, f0 != null && f1 != null ? `${Math.max(0, f0 - f1).toFixed(2)}s of 0.40s` : 'Starts at Week 1'],
+    ['rocket', gain('forty') / 8, tested ? `${Math.max(0, gain('forty'))}% of 8%` : 'Starts at Week 1'],
+    ['quick', gain('dash') / 8, tested ? `${Math.max(0, gain('dash'))}% of 8%` : 'Starts at Week 1'],
+    ['cuts', gain('shuttle') / 7, tested ? `${Math.max(0, gain('shuttle'))}% of 7%` : 'Starts at Week 1'],
+    ['springs', gain('jump') / 12, tested ? `${Math.max(0, gain('jump'))}% of 12%` : 'Starts at Week 1'],
+    ['all', TESTS.filter(t => gain(t.id) > 0).length / 4, tested ? `${TESTS.filter(t => gain(t.id) > 0).length} of 4 tests improved` : 'Starts at Week 5'],
+  ]
+  return rows.filter(([id]) => !have.has(id))
+    .map(([id, pct, hint]) => ({ ...byId[id], pct: Math.max(0, Math.min(1, pct || 0)), hint }))
+    .sort((a, b) => b.pct - a.pct || (a.id === 'scholar' ? -1 : 1))
+}

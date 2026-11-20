@@ -25,9 +25,26 @@ export function unlinkCard() { try { localStorage.removeItem(MKEY) } catch { /* 
 // Only the linked athlete's own results go to their card, never a sibling's turn on the same phone.
 const forMe = player => { const me = getMe(); return me && player === me.name ? me : null }
 
+// Days this athlete did something on this phone, for the streak on their Home.
+const DKEY = 'sws_days_v1'
+export const dayKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+export const activeDays = () => { try { return JSON.parse(localStorage.getItem(DKEY)) || [] } catch { return [] } }
+function markActive() {
+  const days = activeDays(), today = dayKey()
+  if (!days.includes(today)) { try { localStorage.setItem(DKEY, JSON.stringify([...days, today].slice(-120))) } catch { /* ignore */ } }
+}
+export function streak(days = activeDays()) {
+  const set = new Set(days), d = new Date()
+  if (!set.has(dayKey(d))) d.setDate(d.getDate() - 1) // streak holds until tonight
+  let n = 0
+  while (set.has(dayKey(d))) { n++; d.setDate(d.getDate() - 1) }
+  return n
+}
+
 export async function syncLesson(player, lesson) {
   const me = forMe(player)
   if (!me) return false
+  markActive()
   await passLesson(me.token, lesson)
   return true
 }
@@ -35,6 +52,7 @@ export async function syncLesson(player, lesson) {
 export async function syncPractice(player, kind, value) {
   const me = forMe(player)
   if (!me) return false
+  markActive()
   try { await logPractice(me.token, kind, value); return true } catch (e) { console.warn('Practice not saved to Speed Card:', e.message); return false }
 }
 
