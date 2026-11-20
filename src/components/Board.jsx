@@ -71,7 +71,7 @@ export default function Board({ athletes, openAthlete }) {
             <span className="rank">{i + 1}</span>
             <span className="who">
               <b>{r.a.name}</b>
-              <span>Age {r.a.age} · {r.a.sport}</span>
+              <span>{[r.a.age && `Age ${r.a.age}`, r.a.sport].filter(Boolean).join(" · ")}</span>
               {badges.length > 0 && <span className="mini-badges" aria-label={`${badges.length} badges: ${badges.map(b => b.label).join(', ')}`}>{badges.slice(0, 4).map(b => <i key={b.id} title={b.label}>{b.icon}</i>)}{badges.length > 4 && <em>+{badges.length - 4}</em>}</span>}
               <div className="bar" aria-hidden="true"><i style={{ width: `${Math.max(4, (r.score / maxScore) * 100)}%` }} /></div>
             </span>

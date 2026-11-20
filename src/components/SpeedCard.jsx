@@ -35,7 +35,7 @@ export default function SpeedCard({ athlete, athletes = [], onClose }) {
         <div className="sheet-head">
           <div>
             <h2 style={{ fontSize: 34 }}>{athlete.name}</h2>
-            <p className="small" style={{ margin: '2px 0 0' }}>Age {athlete.age} · {athlete.sport}</p>
+            <p className="small" style={{ margin: '2px 0 0' }}>{[athlete.age && `Age ${athlete.age}`, athlete.sport].filter(Boolean).join(" · ")}</p>
             {athlete.sample && <p className="sample-note" style={{ margin: '10px 0 0' }}>Sample athlete for preview</p>}
           </div>
         </div>
