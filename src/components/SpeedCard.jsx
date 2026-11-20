@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
 import { TESTS, TEST_WEEKS } from '../data/program.js'
-import { improvement, overallImprovement, fmt, dashMph, lastValue } from '../lib/stats.js'
+import { improvement, overallImprovement, fmt, dashMph, lastValue, pct } from '../lib/stats.js'
 import { badgesFor, BADGES } from '../lib/fun.js'
 import RaceTrack from './RaceTrack.jsx'
 
@@ -41,7 +41,7 @@ export default function SpeedCard({ athlete, athletes = [], onClose }) {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, margin: '18px 0' }}>
-          <div className="big-gain">+{overall}%</div>
+          <div className="big-gain">{pct(overall)}</div>
           <p style={{ margin: '0 0 8px', color: 'var(--soft)', lineHeight: 1.4 }}>faster and stronger overall{forty ? <><br />40-yard average speed: <b className="mono">{dashMph(forty, 40)} mph</b></> : dash ? <><br />20-yard average speed: <b className="mono">{dashMph(dash)} mph</b></> : null}</p>
         </div>
 
@@ -56,6 +56,18 @@ export default function SpeedCard({ athlete, athletes = [], onClose }) {
               ]}
               buttonLabel="Race your ghost"
             />
+          </div>
+        )}
+
+        {athlete.empty && <p className="sample-note">Week 1 testing fills in this card. Badges you earn in Speed School show up here before then.</p>}
+        {athlete.practice && (
+          <div className="practice-bests">
+            <h3>Practice bests <span className="small">from home</span></h3>
+            <div>
+              {[['sprint10', '10 yd', v => `${Number(v).toFixed(2)}s`], ['sprint20', '20 yd', v => `${Number(v).toFixed(2)}s`], ['sprint40', '40 yd', v => `${Number(v).toFixed(2)}s`], ['react', 'Reaction', v => `${Math.round(v)} ms`], ['feet', 'Quick Feet', v => `${Math.round(v)} taps`]]
+                .filter(([k]) => athlete.practice[k] != null)
+                .map(([k, label, f]) => <span key={k}><small>{label}</small><b className="mono">{f(athlete.practice[k])}</b></span>)}
+            </div>
           </div>
         )}
 
@@ -84,7 +96,7 @@ export default function SpeedCard({ athlete, athletes = [], onClose }) {
               <div className="test-tile" key={t.id}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                   <h3>{t.name}</h3>
-                  <span className="mono" style={{ color: '#4ADE80', fontWeight: 700 }}>+{gain}%</span>
+                  <span className="mono" style={{ color: '#4ADE80', fontWeight: 700 }}>{pct(gain)}</span>
                 </div>
                 <p className="small" style={{ margin: '2px 0 0' }}>{t.skill}{t.lowerIsBetter ? ' · lower is better' : ' · farther is better'}</p>
                 <div style={{ height: 90, marginTop: 6 }} aria-hidden="true">

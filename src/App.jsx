@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { LIVE, PROGRAM } from './config.js'
 import { getAthletes } from './lib/store.js'
+import { getMe, claimCard } from './lib/me.js'
 import Home from './components/Home.jsx'
 import Tools from './components/Tools.jsx'
 import Board from './components/Board.jsx'
@@ -18,15 +19,32 @@ const TABS = [
   { id: 'join', label: 'Join', icon: 'M12 5v14M5 12h14' },
 ]
 
-const readHash = () => (window.location.hash.replace('#', '') || 'home')
+const readHash = () => { const h = window.location.hash.replace('#', '') || 'home'; return h.startsWith('me/') ? 'home' : h }
+const readToken = () => { const m = window.location.hash.match(/^#me\/([a-z0-9]{12,40})$/i); return m ? m[1] : null }
 
 export default function App() {
   const [tab, setTab] = useState(readHash)
   const [athletes, setAthletes] = useState([])
   const [open, setOpen] = useState(null)
+  const [me, setMe] = useState(getMe)
+  const [linkMsg, setLinkMsg] = useState(null)
 
   const refresh = useCallback(() => { getAthletes().then(setAthletes).catch(() => setAthletes([])) }, [])
   useEffect(() => { refresh() }, [refresh])
+  // A family's private link (#me/<token>) ties this phone to their athlete's Speed Card.
+  useEffect(() => {
+    const check = () => {
+      const token = readToken()
+      if (!token) return
+      window.history.replaceState(null, '', '#home')
+      claimCard(token)
+        .then(m => { setMe(m); setLinkMsg({ ok: true, text: `Linked to ${m.name}: quizzes and practice bests on this phone now show on their Speed Card.` }) })
+        .catch(e => setLinkMsg({ ok: false, text: e.message }))
+    }
+    check()
+    window.addEventListener('hashchange', check)
+    return () => window.removeEventListener('hashchange', check)
+  }, [])
   useEffect(() => {
     const onHash = () => { setTab(readHash()); window.scrollTo(0, 0) }
     window.addEventListener('hashchange', onHash)
@@ -53,9 +71,20 @@ export default function App() {
           <svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#E53935"/><path d="M36 12l-7 23h10l-4 17 16-25H41l6-15z" fill="#fff"/></svg>
           <span>Speed Work <em>Sundays</em></span>
         </button>
-        <a className="top-cta" href="#join">Sign up</a>
+        {me
+          ? <button className="top-cta" onClick={() => { const a = athletes.find(x => x.id === me.id); if (a) openAthlete(a) }}>My Card</button>
+          : <a className="top-cta" href="#join">Sign up</a>}
       </header>
 
+      {linkMsg && (
+        <div className={`link-banner ${linkMsg.ok ? '' : 'bad'}`} role="status">
+          <span>{linkMsg.ok ? '✅ ' : '⚠️ '}{linkMsg.text}</span>
+          <div>
+            {linkMsg.ok && <button onClick={() => { const a = athletes.find(x => x.id === me?.id); if (a) openAthlete(a); setLinkMsg(null) }}>Open my Speed Card</button>}
+            <button onClick={() => setLinkMsg(null)} aria-label="Dismiss">×</button>
+          </div>
+        </div>
+      )}
       <main className="main">
         {tab === 'home' && <Home go={go} athletes={athletes} openAthlete={openAthlete} />}
         {tab === 'board' && <Board athletes={athletes} openAthlete={openAthlete} />}

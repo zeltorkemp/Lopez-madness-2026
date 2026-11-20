@@ -137,3 +137,10 @@ alter table sws_results add constraint sws_results_test_check check (test in ('f
 
 -- Migration "speed_work_sundays_capitalize_names" (2026-11-14): sws_cap() capitalizes the first letter of each
 -- word (keeps the rest as typed); sws_signup applies it to athlete and parent names. Existing rows fixed.
+
+-- Migration "speed_work_sundays_roster_cards" (2026-11-20): roster built from sign-ups + private Speed Card links.
+-- sws_athletes gains rsvp_id (link to the sign-up), card_token (private family link #me/<token>), sort_order, created_at.
+-- New tables sws_lessons (Speed School passes) and sws_practice (home practice results), both public-read, written
+-- only through token-checked functions. sws_athlete_results view adds lessons (count) and practice (best per kind).
+-- Coach (PIN): sws_build_roster, sws_roster, sws_update_athlete. Family (token): sws_me, sws_pass_lesson, sws_log_practice.
+-- Board names are "First L." via sws_short_name. sws_check_pin is internal only (no anon execute).

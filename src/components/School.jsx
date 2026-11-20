@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { usePlayers, Players } from '../lib/players.jsx'
 import { Figure, gait, lerpPose } from './Runner.jsx'
 import RaceTrack from './RaceTrack.jsx'
+import { syncLesson, isMine, getMe } from '../lib/me.js'
 
 /* ---------- progress: each player on this phone earns Speed Scholar ---------- */
 const SKEY = 'sws_school_v1'
@@ -242,7 +243,9 @@ export default function School() {
   const count = LESSONS.filter(l => done[l.id]).length
   const scholar = count === LESSONS.length
 
+  const [syncMsg, setSyncMsg] = useState('')
   const pass = id => {
+    syncLesson(me, id).then(ok => ok && setSyncMsg(`Saved to ${me}'s Speed Card ✓`)).catch(() => setSyncMsg('Passed here, but it did not reach the Speed Card. Check your connection and pass the quiz again.'))
     if (done[id]) return
     const next = { ...prog, [me]: { ...done, [id]: Date.now() } }
     setProg(next); saveProg(next)
@@ -265,6 +268,8 @@ export default function School() {
           <div className="scholar-bar"><i style={{ width: `${(count / LESSONS.length) * 100}%` }} /></div>
         </div>
       </div>
+      {isMine(me) ? <p className="small" style={{ margin: '-6px 0 12px' }}>Linked to {me}'s Speed Card. Passed lessons show up there.</p> : getMe() ? <p className="small" style={{ margin: '-6px 0 12px' }}>Pick {getMe().name} to save lessons to their Speed Card.</p> : null}
+      {syncMsg && <p role="status" className="small" style={{ margin: '-6px 0 12px', color: 'var(--good)' }}>{syncMsg}</p>}
       {party && <div className="confetti" aria-hidden="true">{Array.from({ length: 24 }, (_, n) => <i key={n} style={{ left: `${(n * 41) % 100}%`, animationDelay: `${(n % 8) * 0.12}s` }}>{['🎉', '⚡', '🧠', '🏃'][n % 4]}</i>)}</div>}
 
       <div className="lessons">

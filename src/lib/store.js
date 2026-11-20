@@ -73,7 +73,11 @@ export async function emailList(pin) {
 export async function getAthletes() {
   if (LIVE) {
     const rows = await rest('sws_athlete_results?select=*')
-    const real = rows.map(r => ({ id: r.id, name: r.display_name, age: r.age, sport: r.sport, results: r.results }))
+    const real = rows.map(r => {
+      const results = r.results || {}
+      const empty = !Object.values(results).some(v => (v || []).some(x => x != null))
+      return { id: r.id, name: r.display_name, age: r.age, sport: r.sport, results, lessons: r.lessons || 0, practice: r.practice || null, empty }
+    })
     const hasTimes = real.some(a => Object.values(a.results || {}).some(v => (v || []).some(x => x != null)))
     // Until the first real time is logged, show labeled sample athletes (plus any real roster).
     if (!hasTimes && SHOW_SAMPLE_BOARD) return [...real, ...DEMO_ATHLETES.map(a => ({ ...a, sample: true }))]
@@ -108,3 +112,31 @@ export function resetDemo() {
   local.set('sws_logged', {})
   local.set('sws_rsvps', [])
 }
+
+/* ---------- roster and private Speed Card links ---------- */
+const rpc = (name, args) => rest(`rpc/${name}`, { method: 'POST', body: JSON.stringify(args) })
+const DEMO_TOKEN = 'demo00000000a1'
+
+export async function buildRoster(pin) {
+  if (LIVE) return rpc('sws_build_roster', { p_pin: pin })
+  return 0
+}
+export async function getRoster(pin) {
+  if (LIVE) return rpc('sws_roster', { p_pin: pin })
+  return DEMO_ATHLETES.map((a, i) => ({ id: a.id, display_name: a.name, full_name: a.name, age: a.age, sport: a.sport, parent_name: 'Sample parent', parent_email: null, card_token: i === 0 ? DEMO_TOKEN : `demo${a.id}xxxxxxxx`, has_times: true }))
+}
+export async function updateAthlete(pin, { id, name, age, sport }) {
+  if (LIVE) return rpc('sws_update_athlete', { p_pin: pin, p_id: id, p_name: name ?? null, p_age: age ?? null, p_sport: sport ?? null })
+}
+export async function lookupCard(token) {
+  if (LIVE) return rpc('sws_me', { p_token: token })
+  const i = token === DEMO_TOKEN ? 0 : DEMO_ATHLETES.findIndex(a => `demo${a.id}xxxxxxxx` === token)
+  return i >= 0 ? [{ id: DEMO_ATHLETES[i].id, display_name: DEMO_ATHLETES[i].name }] : []
+}
+export async function passLesson(token, lesson) {
+  if (LIVE) return rpc('sws_pass_lesson', { p_token: token, p_lesson: lesson })
+}
+export async function logPractice(token, kind, value) {
+  if (LIVE) return rpc('sws_log_practice', { p_token: token, p_kind: kind, p_value: value })
+}
+

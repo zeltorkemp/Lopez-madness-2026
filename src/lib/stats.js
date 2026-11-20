@@ -35,3 +35,6 @@ export function dashMph(seconds, yards = 20) {
 }
 
 export { testById, lastValue }
+
+// '+4.2%' or '-1.3%': a kid can have an off day, so never print '+-'.
+export const pct = v => `${v >= 0 ? '+' : ''}${v}%`

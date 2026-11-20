@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { TESTS } from '../data/program.js'
-import { improvement, overallImprovement, fmt, lastValue } from '../lib/stats.js'
+import { improvement, overallImprovement, fmt, lastValue, pct } from '../lib/stats.js'
 import { AGE_GROUPS, badgesFor } from '../lib/fun.js'
 import RaceTrack from './RaceTrack.jsx'
 
@@ -12,7 +12,7 @@ export default function Board({ athletes, openAthlete }) {
 
   const rows = useMemo(() => {
     const g = AGE_GROUPS.find(x => x.id === ageGroup)
-    const list = athletes.filter(a => a.results && g.test(a))
+    const list = athletes.filter(a => a.results && !a.empty && g.test(a))
     if (view === 'improved') return list.map(a => ({ a, score: overallImprovement(a) })).sort((x, y) => y.score - x.score)
     const t = TESTS.find(x => x.id === view)
     return list.map(a => ({ a, best: lastValue(a.results[view] || []), score: improvement(view, a.results[view]) }))
@@ -76,8 +76,8 @@ export default function Board({ athletes, openAthlete }) {
               <div className="bar" aria-hidden="true"><i style={{ width: `${Math.max(4, (r.score / maxScore) * 100)}%` }} /></div>
             </span>
             {view === 'improved'
-              ? <span className="gain">+{r.score}%<small>overall</small></span>
-              : <span className="gain" style={{ color: '#fff' }}>{fmt(view, r.best)}<small style={{ color: '#4ADE80' }}>+{r.score}%</small></span>}
+              ? <span className="gain">{pct(r.score)}<small>overall</small></span>
+              : <span className="gain" style={{ color: '#fff' }}>{fmt(view, r.best)}<small style={{ color: '#4ADE80' }}>{pct(r.score)}</small></span>}
           </button>
         )
       })}

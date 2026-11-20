@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { TESTS } from '../data/program.js'
 import { GOAL_BANDS } from '../config.js'
 import { usePlayers, Players } from '../lib/players.jsx'
+import { syncPractice, isMine } from '../lib/me.js'
 
 /* ---------- storage (practice times stay on this phone) ---------- */
 const KEY = 'sws_practice_v1'
@@ -96,6 +97,7 @@ function Timer({ player }) {
     setElapsed(secs * 1000); setState('done')
     const next = [...list, { d: dist, s: secs, at: Date.now(), p: player }]
     setList(next); save(next)
+    syncPractice(player, `sprint${dist}`, secs)
   }
 
   const cancel = () => { stopLoops(); hush(); setState('ready'); setElapsed(0) }
@@ -304,6 +306,7 @@ function Reaction({ player }) {
         const best = Math.min(...next)
         const all = [...list, { p: player, v: best, at: Date.now() }]
         setList(all); REACT.save(all); setPhase('done')
+        syncPractice(player, 'react', best)
       } else setPhase('hit')
       return
     }
@@ -362,6 +365,7 @@ function QuickFeet({ player }) {
     setPhase('done'); setLeft(0)
     const all = [...FEET.load(), { p: player, v: countRef.current, at: Date.now() }]
     setList(all); FEET.save(all)
+    syncPractice(player, 'feet', countRef.current)
   }
   const press = side => e => {
     e.preventDefault()
@@ -520,6 +524,7 @@ export default function Tools() {
           ))}
         </div>
         {competitive && <Players st={players} set={setPlayers} />}
+        {competitive && isMine(player) && <p className="small" style={{ margin: '8px 0 0' }}>Bests also save to {player}'s Speed Card.</p>}
       </div>
       {tool === 'timer' && <Timer player={player} />}
       {tool === 'react' && <Reaction player={player} />}

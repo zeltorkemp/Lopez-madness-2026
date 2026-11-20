@@ -17,6 +17,7 @@ export const BADGES = [
   { id: 'springs', icon: '🦘', label: 'Springs', desc: 'Broad jump 12% farther than Week 1' },
   { id: 'all', icon: '⭐', label: 'All-Around', desc: 'Improved on all four tests' },
   { id: 'pr', icon: '🔥', label: 'PR Breaker', desc: 'Set a personal record at the latest test' },
+  { id: 'scholar', icon: '🧠', label: 'Speed Scholar', desc: 'Passed all three Speed School lessons' },
   { id: 'champ', icon: '🏆', label: 'Test Champ', desc: 'Most improved in your age group on any test' },
 ]
 const byId = Object.fromEntries(BADGES.map(b => [b.id, b]))
@@ -44,6 +45,7 @@ export function badgesFor(athlete, athletes = []) {
   if (gain('jump') >= 12) out.push('springs')
   if (TESTS.every(t => gain(t.id) > 0)) out.push('all')
   if (TESTS.some(t => isPr(t.id, r[t.id]))) out.push('pr')
+  if ((athlete.lessons || 0) >= 3) out.push('scholar')
   const group = athletes.filter(a => a.results && ageGroupOf(a) === ageGroupOf(athlete))
   const champOf = TESTS.filter(t => {
     const best = Math.max(...group.map(a => improvement(t.id, a.results[t.id])))

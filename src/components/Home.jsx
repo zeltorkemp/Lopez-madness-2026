@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { PROGRAM, FUND } from '../config.js'
 import { rsvpCount } from '../lib/store.js'
-import { overallImprovement, lastValue } from '../lib/stats.js'
+import { overallImprovement, lastValue, pct } from '../lib/stats.js'
 import { squadStats, BADGES } from '../lib/fun.js'
 import RaceTrack from './RaceTrack.jsx'
 
@@ -20,7 +20,7 @@ export default function Home({ go, athletes, openAthlete }) {
   const cd = useCountdown(PROGRAM.startDate)
   const spotsLeft = count == null ? PROGRAM.cap : Math.max(PROGRAM.cap - count.confirmed, 0)
   const full = spotsLeft === 0
-  const ranked = useMemo(() => [...athletes].sort((a, b) => overallImprovement(b) - overallImprovement(a)).slice(0, 3), [athletes])
+  const ranked = useMemo(() => athletes.filter(a => !a.empty).sort((a, b) => overallImprovement(b) - overallImprovement(a)).slice(0, 3), [athletes])
   const sample = ranked.some(a => a.sample)
   const squad = useMemo(() => squadStats(athletes), [athletes])
   const goal = PROGRAM.cap // one second per athlete spot
@@ -145,7 +145,7 @@ export default function Home({ go, athletes, openAthlete }) {
               <button key={a.id} className="board-row" onClick={() => openAthlete(a)}>
                 <span className={`rank ${i === 0 ? 'gold' : ''}`}>{String(i + 1).padStart(2, '0')}</span>
                 <span className="who"><b>{a.name}</b> <span>· {a.age}</span></span>
-                <span className="gain">+{overallImprovement(a)}%</span>
+                <span className="gain">{pct(overallImprovement(a))}</span>
               </button>
             ))}
           </div>
