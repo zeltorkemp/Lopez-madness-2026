@@ -40,10 +40,12 @@ export default function SpeedCard({ athlete, athletes = [], onClose }) {
           </div>
         </div>
 
+        {!athlete.empty && (
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, margin: '18px 0' }}>
           <div className="big-gain">{pct(overall)}</div>
           <p style={{ margin: '0 0 8px', color: 'var(--soft)', lineHeight: 1.4 }}>faster and stronger overall{forty ? <><br />40-yard average speed: <b className="mono">{dashMph(forty, 40)} mph</b></> : dash ? <><br />20-yard average speed: <b className="mono">{dashMph(dash)} mph</b></> : null}</p>
         </div>
+        )}
 
         {ghost && forty && forty !== ghost && (
           <div style={{ marginBottom: 18 }}>

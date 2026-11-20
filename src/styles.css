@@ -390,7 +390,7 @@ button.top-cta { border: 0; color: inherit; cursor: pointer; }
 .practice-bests { margin-bottom: 18px; }
 .practice-bests h3 { font-size: 17px; margin-bottom: 8px; }
 .practice-bests > div { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.practice-bests span { background: var(--panel); border: 1px solid var(--line); padding: 10px; }
+.practice-bests > div > span { background: var(--panel); border: 1px solid var(--line); padding: 10px; }
 .practice-bests small { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
 .practice-bests b { display: block; font-family: 'Chakra Petch', sans-serif; font-size: 18px; color: var(--good); margin-top: 2px; }
 .roster { display: grid; gap: 0; border-top: 1px solid var(--line); }
