@@ -119,8 +119,8 @@ h1, h2, h3, .display { font-family: 'Archivo Black', 'Inter', sans-serif; font-w
 .sample-note { background: rgba(255,211,77,0.08); border-left: 3px solid var(--gold); color: #FDE68A; padding: 10px 12px; font-size: 14px; font-weight: 600; margin: 0 0 12px; }
 
 /* Speed card sheet */
-.overlay { position: fixed; inset: 0; z-index: 50; background: rgba(2,4,8,0.8); display: flex; align-items: flex-end; justify-content: center; }
-.sheet { width: 100%; max-width: 640px; max-height: 94vh; overflow-y: auto; overscroll-behavior: contain; background: var(--bg); border-top: 3px solid var(--red); padding: 0 20px calc(28px + env(safe-area-inset-bottom)); animation: up .25s ease; }
+.overlay { position: fixed; inset: 0; height: 100vh; height: 100dvh; z-index: 50; background: rgba(2,4,8,0.8); display: flex; align-items: flex-end; justify-content: center; }
+.sheet { width: 100%; max-width: 640px; max-height: 94vh; max-height: 94dvh; overflow-y: auto; overscroll-behavior: contain; background: var(--bg); border-top: 3px solid var(--red); padding: 0 20px calc(28px + env(safe-area-inset-bottom)); animation: up .25s ease; }
 .sheet-bar { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 -20px 14px; padding: 8px 12px; background: rgba(5,8,15,0.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 .sheet-back { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 8px; background: none; border: 0; font-weight: 700; font-size: 16px; cursor: pointer; }
 .sheet-title { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--red); }

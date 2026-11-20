@@ -89,7 +89,7 @@ export default function SpeedCard({ athlete, athletes = [], onClose }) {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gap: 10 }}>
+        {!athlete.empty && <div style={{ display: 'grid', gap: 10 }}>
           {TESTS.map(t => {
             const vals = athlete.results[t.id] || []
             const data = TEST_WEEKS.map((w, i) => ({ week: `Wk ${w}`, v: vals[i] ?? null }))
@@ -117,7 +117,7 @@ export default function SpeedCard({ athlete, athletes = [], onClose }) {
               </div>
             )
           })}
-        </div>
+        </div>}
         <button className="btn btn-ghost btn-block" onClick={onClose}>Done</button>
       </div>
     </div>
