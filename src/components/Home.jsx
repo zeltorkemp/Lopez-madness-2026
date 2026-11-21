@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { PROGRAM } from '../config.js'
-import { rsvpCount } from '../lib/store.js'
 import { overallImprovement, lastValue, pct } from '../lib/stats.js'
 import { squadStats, BADGES, AGE_GROUPS, badgesFor, badgeProgress } from '../lib/fun.js'
 import { activeDays, streak, dayKey } from '../lib/me.js'
@@ -35,9 +34,7 @@ function SquadGoal({ athletes }) {
 }
 
 /* ---------- visitors: the pitch, kept short ---------- */
-function VisitorHome({ go, athletes, openAthlete }) {
-  const [count, setCount] = useState(null)
-  useEffect(() => { rsvpCount().then(setCount).catch(() => setCount(null)) }, [])
+function VisitorHome({ go, athletes, openAthlete, count }) {
   const days = useDaysToStart()
   const inCount = count?.confirmed
   const spotsLeft = count == null ? null : Math.max(PROGRAM.cap - count.confirmed, 0)
@@ -57,13 +54,14 @@ function VisitorHome({ go, athletes, openAthlete }) {
         <div className="hero-copy">
           <p className="eyebrow">Free · {PROGRAM.weeks} Sundays · Ages {PROGRAM.ages}</p>
           <h1>Speed<br />Work<br />Sundays</h1>
+          {/* The button lives inside the photo so it is on the first screen of any phone. */}
+          <a className="btn btn-red btn-block hero-cta" href="#join">{full ? 'Join the waitlist' : `Reserve a spot${spotsLeft ? ` · ${spotsLeft} left` : ''}`}</a>
         </div>
       </section>
 
       <section className="intro">
         <p className="lede">Get timed on day one. Get timed again in Week 10. See the difference on your own Speed Card.</p>
-        <p className="where">Sundays, {PROGRAM.startLabel.replace(/^Starting/, 'starting')} · <a href={PROGRAM.locationMapUrl} target="_blank" rel="noreferrer">{PROGRAM.location}</a></p>
-        <a className="btn btn-red btn-block" href="#join">{full ? 'Join the waitlist' : 'Reserve a spot'}</a>
+        <p className="where">Sundays, {PROGRAM.startLabel.replace(/^Starting/, 'starting')} · {PROGRAM.sessionLength} · <a href={PROGRAM.locationMapUrl} target="_blank" rel="noreferrer">{PROGRAM.location}</a></p>
       </section>
 
       <section className="scoreboard" aria-label="Key details">
@@ -79,6 +77,12 @@ function VisitorHome({ go, athletes, openAthlete }) {
           <li><span className="num">02</span><div><b>Train smart</b><p>Short reps, full rest, real sprint mechanics. Jumps, top speed and races every Sunday.</p></div></li>
           <li><span className="num">03</span><div><b>See the proof</b><p>Retest in Weeks 5 and 10. Your Speed Card shows every gain, and the board ranks improvement, not who started fastest.</p></div></li>
         </ol>
+      </section>
+
+      <section className="section">
+        <h2>Your coach</h2>
+        <p className="coach-bio"><b>{PROGRAM.coach}.</b> {PROGRAM.coachBio}</p>
+        <button className="btn btn-ghost btn-block" style={{ marginTop: 14 }} onClick={() => go('plan')}>See the 10-week plan</button>
       </section>
 
       <section className="section">
@@ -243,9 +247,9 @@ function AthleteHome({ me, mine, athletes, go, openAthlete }) {
   )
 }
 
-export default function Home({ go, athletes, openAthlete, me }) {
+export default function Home({ go, athletes, openAthlete, me, count }) {
   const mine = me && athletes.find(a => a.id === me.id)
   return mine
     ? <AthleteHome me={me} mine={mine} athletes={athletes} go={go} openAthlete={openAthlete} />
-    : <VisitorHome go={go} athletes={athletes} openAthlete={openAthlete} />
+    : <VisitorHome go={go} athletes={athletes} openAthlete={openAthlete} count={count} />
 }

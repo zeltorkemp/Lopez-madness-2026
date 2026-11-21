@@ -8,7 +8,8 @@
   --soft: #C9D2E3;
   --muted: #8E9AB2;
   --red: #FF3B30;
-  --red-dark: #D92D23;
+  --red-dark: #D92D23;   /* fill under white text: 4.8:1. Bright --red under white is 3.5:1 and fails AA. */
+  --red-deep: #BF251C;
   --gold: #FFD34D;
   --good: #4ADE80;
   --navy: #0A0F1A;
@@ -34,7 +35,9 @@ h1, h2, h3, .display { font-family: 'Archivo Black', 'Inter', sans-serif; font-w
 .brand span { white-space: nowrap; }
 .top-cta { background: rgba(255,255,255,0.12); padding: 0 16px; border-radius: 999px; font-weight: 700; font-size: 14px; text-decoration: none; white-space: nowrap; min-height: 44px; display: inline-flex; align-items: center; }
 .top-cta:hover { background: rgba(255,255,255,0.2); }
-@media (max-width: 420px) { .brand { font-size: 13px; gap: 8px; } .top-cta { padding: 0 13px; font-size: 13px; } }
+.top-cta-red { background: var(--red-dark); color: #fff; }
+.top-cta-red:hover { background: var(--red-deep); }
+@media (max-width: 420px) { .brand { font-size: 13px; gap: 8px; } .top-cta { padding: 0 13px; font-size: 13px; } .top-cta .wide { display: none; } }
 
 /* Tab bar */
 .tabbar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 30; display: grid; grid-template-columns: repeat(5, 1fr); background: rgba(5,8,15,0.94); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
@@ -49,16 +52,19 @@ h1, h2, h3, .display { font-family: 'Archivo Black', 'Inter', sans-serif; font-w
 .hero-copy { position: absolute; left: 20px; right: 20px; bottom: 22px; }
 .eyebrow { margin: 0 0 12px; font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red); }
 .hero h1 { font-size: clamp(54px, 15.5vw, 96px); line-height: 0.92; text-transform: uppercase; letter-spacing: -0.02em; }
-@media (min-width: 760px) { .hero { margin: 0; } .hero-copy { left: 32px; bottom: 32px; } }
+/* The eyebrow sits over the photo, where red on skin tones is hard to read, so it gets its own dark backing. */
+.hero .eyebrow { display: inline-block; margin-bottom: 10px; padding: 5px 9px; background: rgba(5,8,15,0.8); }
+.hero-cta { margin-top: 18px; }
+@media (min-width: 760px) { .hero { margin: 0; } .hero-copy { left: 32px; bottom: 32px; } .hero-cta { max-width: 380px; } }
 
-.intro { padding-top: 2px; }
+.intro { padding-top: 14px; }
 .lede { margin: 0; font-size: 18px; line-height: 1.5; color: var(--soft); }
 
 /* Buttons */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 22px; border-radius: 999px; border: 0; font-weight: 700; font-size: 16px; cursor: pointer; text-decoration: none; }
 .btn-block { display: flex; width: 100%; margin-top: 20px; }
-.btn-red { background: var(--red); color: #fff; }
-.btn-red:hover { background: var(--red-dark); }
+.btn-red { background: var(--red-dark); color: #fff; }
+.btn-red:hover { background: var(--red-deep); }
 .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
 .btn-ghost:hover { border-color: #3A4560; }
 .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
@@ -75,6 +81,12 @@ h1, h2, h3, .display { font-family: 'Archivo Black', 'Inter', sans-serif; font-w
 .section h2 { font-size: 26px; margin-bottom: 4px; }
 .section h2 small { display: block; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 400; color: var(--muted); margin-top: 6px; letter-spacing: 0; }
 .card { background: var(--panel); border: 1px solid var(--line); padding: 18px; }
+.facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; margin: 14px 0 16px; background: var(--line); border: 1px solid var(--line); }
+.facts div { background: var(--panel); padding: 10px 12px; min-width: 0; }
+.facts dt { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.facts dd { margin: 3px 0 0; font-size: 14px; font-weight: 600; line-height: 1.35; }
+.coach-bio { margin: 10px 0 0; color: var(--soft); font-size: 15px; line-height: 1.5; }
+.coach-bio b { color: var(--text); }
 .section.card h2 { margin-bottom: 10px; }
 
 .steps { list-style: none; margin: 14px 0 0; padding: 0; border-top: 1px solid var(--line); }
@@ -156,10 +168,12 @@ h1, h2, h3, .display { font-family: 'Archivo Black', 'Inter', sans-serif; font-w
 input[type=range] { width: 100%; accent-color: var(--red); min-height: 44px; }
 .check { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; line-height: 1.45; margin-bottom: 12px; color: var(--soft); }
 .check input { width: 22px; height: 22px; accent-color: var(--red); flex: none; margin-top: 1px; }
-.waiver { max-height: 220px; overflow-y: auto; background: var(--bg); border: 1px solid #2A3449; border-radius: 10px; padding: 12px 14px; font-size: 14px; line-height: 1.5; color: var(--soft); }
+.waiver { background: var(--bg); border: 1px solid #2A3449; border-radius: 10px; padding: 12px 14px; font-size: 14px; line-height: 1.5; color: var(--soft); }
 .waiver p { margin: 0 0 10px; }
-.waiver:focus { outline: 2px solid var(--red); }
-.success { background: rgba(74,222,128,0.08); border-left: 3px solid var(--good); padding: 16px; }
+.waiver p:last-child { margin-bottom: 0; }
+.success { background: rgba(74,222,128,0.08); border-left: 3px solid var(--good); padding: 16px; scroll-margin-top: 84px; }
+/* Cash App handle: a long unbroken word in the display face. Fixed at 30px it was wider than a phone. */
+.cashtag { font-size: clamp(16px, 5.6vw, 30px); overflow-wrap: anywhere; }
 
 /* Plan */
 .weekstrip { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x mandatory; }
@@ -167,8 +181,8 @@ input[type=range] { width: 100%; accent-color: var(--red); min-height: 44px; }
 .weekstrip button span { font-size: 10px; color: var(--muted); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
 .weekstrip button b { font-family: 'Chakra Petch', sans-serif; font-size: 26px; }
 .weekstrip button.test { border-bottom: 3px solid var(--gold); }
-.weekstrip button[aria-pressed="true"] { background: var(--red); border-color: var(--red); }
-.weekstrip button[aria-pressed="true"] span { color: #FFE1DE; }
+.weekstrip button[aria-pressed="true"] { background: var(--red-dark); border-color: var(--red-dark); }
+.weekstrip button[aria-pressed="true"] span { color: #fff; }
 .tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 10px; background: var(--panel-2); color: var(--soft); }
 .tag.test { background: var(--gold); color: #1F1300; }
 .drill { border-top: 1px solid var(--line); padding: 14px 0; }

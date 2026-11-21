@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { LIVE, PROGRAM } from './config.js'
-import { getAthletes } from './lib/store.js'
+import { getAthletes, rsvpCount } from './lib/store.js'
 import { getMe, claimCard } from './lib/me.js'
 import Home from './components/Home.jsx'
 import Tools from './components/Tools.jsx'
@@ -28,6 +28,10 @@ export default function App() {
   const [open, setOpen] = useState(null)
   const [me, setMe] = useState(getMe)
   const [linkMsg, setLinkMsg] = useState(null)
+  // Sign-up counts for the header button and Home. Refreshed on every tab change so a new sign-up shows up.
+  const [count, setCount] = useState(null)
+  useEffect(() => { rsvpCount().then(setCount).catch(() => setCount(null)) }, [tab])
+  const full = count ? count.confirmed >= PROGRAM.cap : false
 
   const refresh = useCallback(() => { getAthletes().then(setAthletes).catch(() => setAthletes([])) }, [])
   useEffect(() => { refresh() }, [refresh])
@@ -73,7 +77,7 @@ export default function App() {
         </button>
         {me
           ? <button className="top-cta" onClick={() => { const a = athletes.find(x => x.id === me.id); if (a) openAthlete(a) }}>My Card</button>
-          : <a className="top-cta" href="#join">Sign up</a>}
+          : tab !== 'join' && <a className="top-cta top-cta-red" href="#join">{/* one inline wrapper: as direct flex children the words would lose the space between them */}<span>{full ? 'Waitlist' : <>Reserve<span className="wide"> a spot</span></>}</span></a>}
       </header>
 
       {linkMsg && (
@@ -86,7 +90,7 @@ export default function App() {
         </div>
       )}
       <main className="main">
-        {tab === 'home' && <Home go={go} athletes={athletes} openAthlete={openAthlete} me={me} />}
+        {tab === 'home' && <Home go={go} athletes={athletes} openAthlete={openAthlete} me={me} count={count} />}
         {tab === 'board' && <Board athletes={athletes} openAthlete={openAthlete} />}
         {(tab === 'lab' || tab === 'tools') && <Tools />}
         {(tab === 'learn' || tab === 'plan') && <Learn view={tab === 'plan' ? 'plan' : 'school'} go={go} />}
