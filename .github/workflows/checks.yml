@@ -1,0 +1,21 @@
+# Runs on every pull request and on main: the production build (with its CSS check)
+# and the phone-size browser check in scripts/check-ux.mjs.
+# The browser check builds in demo mode, so it never touches the sign-up database.
+name: Checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  build-and-ux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
