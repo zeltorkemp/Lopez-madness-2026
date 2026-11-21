@@ -77,12 +77,7 @@ function VisitorHome({ go, athletes, openAthlete, count }) {
           <li><span className="num">02</span><div><b>Train smart</b><p>Short reps, full rest, real sprint mechanics. Jumps, top speed and races every Sunday.</p></div></li>
           <li><span className="num">03</span><div><b>See the proof</b><p>Retest in Weeks 5 and 10. Your Speed Card shows every gain, and the board ranks improvement, not who started fastest.</p></div></li>
         </ol>
-      </section>
-
-      <section className="section">
-        <h2>Your coach</h2>
-        <p className="coach-bio"><b>{PROGRAM.coach}.</b> {PROGRAM.coachBio}</p>
-        <button className="btn btn-ghost btn-block" style={{ marginTop: 14 }} onClick={() => go('plan')}>See the 10-week plan</button>
+        <button className="btn btn-ghost btn-block" style={{ marginTop: 16 }} onClick={() => go('plan')}>See the 10-week plan</button>
       </section>
 
       <section className="section">

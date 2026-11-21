@@ -149,7 +149,6 @@ export default function Join() {
         <h2>Questions</h2>
         <div className="card">
           {[
-            ['Who is coaching?', `${PROGRAM.coach}. ${PROGRAM.coachBio}`],
             ['How long is each session?', `${PROGRAM.sessionLength[0].toUpperCase()}${PROGRAM.sessionLength.slice(1)}, every Sunday for ${PROGRAM.weeks} weeks.`],
             ['Does my kid need to be fast already?', 'No. The scoreboard is improvement, so every athlete can win Most Improved.'],
             ['Is it really free?', 'Yes. Donations are optional and only buy equipment.'],

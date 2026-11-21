@@ -16,8 +16,6 @@ export const PROGRAM = {
   weeks: 10,
   cap: 20,
   coach: 'Coach Gabe Lopez',
-  // Shown in "Your coach" on Home and in the sign-up questions. Edit freely.
-  coachBio: 'Gabe coaches youth football with the North Raleigh Bulldogs. He is an Army veteran and a former lead instructor at the Army NCO Academy, and he built this clinic so local kids get real speed training with real numbers. Parents are welcome to stay for every session.',
   contact: 'info@speedworksundays.com',
   siteUrl: 'https://www.speedworksundays.com',
   cashApp: '$SpeedWorkSundays',

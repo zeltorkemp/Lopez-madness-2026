@@ -85,8 +85,6 @@ h1, h2, h3, .display { font-family: 'Archivo Black', 'Inter', sans-serif; font-w
 .facts div { background: var(--panel); padding: 10px 12px; min-width: 0; }
 .facts dt { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 .facts dd { margin: 3px 0 0; font-size: 14px; font-weight: 600; line-height: 1.35; }
-.coach-bio { margin: 10px 0 0; color: var(--soft); font-size: 15px; line-height: 1.5; }
-.coach-bio b { color: var(--text); }
 .section.card h2 { margin-bottom: 10px; }
 
 .steps { list-style: none; margin: 14px 0 0; padding: 0; border-top: 1px solid var(--line); }
